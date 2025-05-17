@@ -1,0 +1,30 @@
+{
+    "name": "lauchoit/laravel-hex-mod",
+    "description": "esta es la descripcion",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Lauchoit\\LaravelHexMod\\": "src/"
+        },
+        "classmap": ["src/"]
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Lauchoit\\LaravelHexMod\\LaravelHexModProvider"
+            ]
+        }
+    },
+    "authors": [
+        {
+            "name": "Jesus Laucho",
+            "email": "contacto@lauchoit.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "php": "^8.1"
+    }
+}
