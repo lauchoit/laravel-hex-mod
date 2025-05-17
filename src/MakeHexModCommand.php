@@ -72,7 +72,7 @@ class MakeHexModCommand extends Command
 
             $content = file_get_contents($sourceStub);
             $content = str_replace(
-                ['MyModule', 'my-module'],
+                ['{{StudlyName}}', '{{kebabName}}'],
                 [$studlyName, $kebabName],
                 $content
             );
