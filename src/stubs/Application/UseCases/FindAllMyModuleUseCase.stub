@@ -1,6 +1,6 @@
 <?php
 
-namespace Src\{{StudlyName}}\Application\UseCases;
+namespace Lauchoit\LaravelHexMod\{{StudlyName}}\Application\UseCases;
 
 class FindAll{{StudlyName}}UseCase
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Src\{{StudlyName}}\Domain\Entity;
+namespace Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Entity;
 
 class {{StudlyName}}
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Src\{{StudlyName}}\Infrastructure\Repository\UseCases;
+namespace Lauchoit\LaravelHexMod\{{StudlyName}}\Infrastructure\Repository\UseCases;
 
 class FindById{{StudlyName}}UseCaseImpl
 {

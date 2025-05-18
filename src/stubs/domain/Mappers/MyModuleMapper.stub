@@ -1,6 +1,6 @@
 <?php
 
-namespace Src\{{StudlyName}}\Domain\Mappers;
+namespace Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Mappers;
 
 class {{StudlyName}}Mapper
 {

@@ -1,9 +1,9 @@
 <?php
 
-namespace Src\{{StudlyName}}\Application\UseCases;
+namespace Lauchoit\LaravelHexMod\{{StudlyName}}\Application\UseCases;
 
-use Src\{{StudlyName}}\Domain\Entity\{{StudlyName}};
-use Src\{{StudlyName}}\Domain\Repository\{{StudlyName}}Repository;
+use Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Entity\{{StudlyName}};
+use Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Repository\{{StudlyName}}Repository;
 
 readonly class Create{{StudlyName}}UseCase
 {

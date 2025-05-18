@@ -1,8 +1,8 @@
 <?php
 
-namespace Src\{{StudlyName}}\Domain\Repository;
+namespace Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Repository;
 
-use Src\{{StudlyName}}\Domain\Entity\{{StudlyName}};
+use Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Entity\{{StudlyName}};
 
 abstract class {{StudlyName}}Repository
 {

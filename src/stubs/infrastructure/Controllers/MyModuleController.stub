@@ -1,11 +1,11 @@
 <?php
 
-namespace Src\{{StudlyName}}\Infrastructure\Controllers;
+namespace Lauchoit\LaravelHexMod\{{StudlyName}}\Infrastructure\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Src\{{StudlyName}}\Domain\Entity\{{StudlyName}};
-use Src\{{StudlyName}}\Application\UseCases\Create{{StudlyName}}UseCase;
+use Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Entity\{{StudlyName}};
+use Lauchoit\LaravelHexMod\{{StudlyName}}\Application\UseCases\Create{{StudlyName}}UseCase;
 
 
 class {{StudlyName}}Controller extends Controller

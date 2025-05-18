@@ -1,10 +1,10 @@
 <?php
 
-namespace Src\{{StudlyName}}\Infrastructure\Repository;
+namespace Lauchoit\LaravelHexMod\{{StudlyName}}\Infrastructure\Repository;
 
-use Src\{{StudlyName}}\Domain\Entity\{{StudlyName}};
-use Src\{{StudlyName}}\Domain\Repository\{{StudlyName}}Repository;
-use Src\{{StudlyName}}\Infrastructure\Repository\UseCases\Create{{StudlyName}}UseCaseImpl;
+use Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Entity\{{StudlyName}};
+use Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Repository\{{StudlyName}}Repository;
+use Lauchoit\LaravelHexMod\{{StudlyName}}\Infrastructure\Repository\UseCases\Create{{StudlyName}}UseCaseImpl;
 
 class {{StudlyName}}RepositoryImpl extends {{StudlyName}}Repository
 {
@@ -13,12 +13,12 @@ class {{StudlyName}}RepositoryImpl extends {{StudlyName}}Repository
         private readonly Create{{StudlyName}}UseCaseImpl $create,
         ) { }
 
-    public function create(array $vehicle): Vehicle
+    public function create(array ${{kebabName}}): {{StudlyName}}
     {
-        return $this->create->execute($vehicle);
+        return $this->create->execute(${{kebabName}});
     }
 
-    public function update(array $vehicle): Vehicle
+    public function update(array ${{kebabName}}): {{StudlyName}}
     {
         throw new \Exception('update Not implemented');
     }
@@ -28,7 +28,7 @@ class {{StudlyName}}RepositoryImpl extends {{StudlyName}}Repository
         throw new \Exception('update Not implemented');
     }
 
-    public function findById(int $id): ?Vehicle
+    public function findById(int $id): ?{{StudlyName}}
     {
         throw new \Exception('update Not implemented');
     }
