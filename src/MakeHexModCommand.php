@@ -14,48 +14,45 @@ class MakeHexModCommand extends Command
     {
         $name = $this->argument('name');
 
-        $studlyName = Str::studly($name);  // Ej: my-module -> MyModule
-        $kebabName  = Str::kebab($name);   // Ej: MyModule -> my-module
+        $studlyName = Str::studly($name);
+        $kebabName  = Str::kebab($name);
 
-        $basePath = base_path("modules/{$kebabName}");
+        $basePath = base_path("src/{$studlyName}");
         $stubPath = __DIR__ . '/stubs';
 
         $this->info("Generando módulo {$studlyName} en: {$basePath}");
 
         $files = collect([
-            "application/UseCases/CreateMyModuleUseCase.stub",
-            "application/UseCases/DeleteByIdMyModuleUseCase.stub",
-            "application/UseCases/FindAllMyModuleUseCase.stub",
-            "application/UseCases/FindByIdMyModuleUseCase.stub",
-            "application/UseCases/UpdateMyModuleUseCase.stub",
-            "domain/Entity/MyModule.stub",
-            "domain/Mappers/MyModuleMapper.stub",
-            "domain/Repository/MyModuleRepositoty.stub",
-            "infrastructure/Controllers/CreateMyModuleController.stub",
-            "infrastructure/Controllers/DeleteMyModuleController.stub",
-            "infrastructure/Controllers/FindAllMyModuleController.stub",
-            "infrastructure/Controllers/FindByIdMyModuleController.stub",
-            "infrastructure/Controllers/UpdateMyModuleController.stub",
-            "infrastructure/Database/factories/MyModuleFactory.stub",
-            "infrastructure/Database/migrations/0001_01_01_000000_create_myModule_table.stub",
-            "infrastructure/Model/MyModuleModel.stub",
-            "infrastructure/Repository/MyModuleRepositoryImpl.stub",
-            "infrastructure/Repository/UserCases/CreateMyModuleUseCaseImpl.stub",
-            "infrastructure/Repository/UserCases/DeleteByIdMyModuleUseCaseImpl.stub",
-            "infrastructure/Repository/UserCases/FindAllMyModuleUseCaseImpl.stub",
-            "infrastructure/Repository/UserCases/FindByIdMyModuleUseCaseImpl.stub",
-            "infrastructure/Repository/UserCases/UpdateMyModuleUseCaseImpl.stub",
-            "infrastructure/Routes/MyModuleRoutes.stub",
+            "Application/UseCases/CreateMyModuleUseCase.stub",
+            "Application/UseCases/DeleteByIdMyModuleUseCase.stub",
+            "Application/UseCases/FindAllMyModuleUseCase.stub",
+            "Application/UseCases/FindByIdMyModuleUseCase.stub",
+            "Application/UseCases/UpdateByIdMyModuleUseCase.stub",
+            "Domain/Entity/MyModule.stub",
+            "Domain/Mappers/MyModuleMapper.stub",
+            "Domain/Repository/MyModuleRepository.stub",
+            "Infrastructure/Controllers/MyModuleController.stub",
+            "Infrastructure/Repository/MyModuleRepositoryImpl.stub",
+            "Infrastructure/Repository/UseCases/CreateMyModuleUseCaseImpl.stub",
+            "Infrastructure/Repository/UseCases/DeleteByIdMyModuleUseCaseImpl.stub",
+            "Infrastructure/Repository/UseCases/FindAllMyModuleUseCaseImpl.stub",
+            "Infrastructure/Repository/UseCases/FindByIdMyModuleUseCaseImpl.stub",
+            "Infrastructure/Repository/UseCases/UpdateByIdMyModuleUseCaseImpl.stub",
+            "Infrastructure/Routes/MyModuleRoutes.stub",
+            "Infrastructure/Model/MyModuleModel.stub",
+//            "Infrastructure/Database/Factories/MyModuleFactory.stub",
+//            "Infrastructure/Database/Migrations/0001_01_01_000000_create_myModule_table.stub",
         ]);
 
         foreach ($files as $relativePath) {
             $sourceStub = $stubPath . '/' . $relativePath;
-            $targetPath = $basePath . '/' . str_replace(
-                    ['MyModule.stub', 'my-module.stub'],
-                    [$studlyName . '.stub', $kebabName . '.php'],
-                    $relativePath
-                );
-            $targetPath = str_replace('.stub', '.php', $targetPath);
+            $relativePath = str_replace(
+                ['MyModule', 'my-module'],
+                [$studlyName, $kebabName],
+                $relativePath
+            );
+
+            $targetPath = $basePath . '/' . str_replace('.stub', '.php', $relativePath);
 
             if (!file_exists($sourceStub)) {
                 $this->warn("❌ Stub no encontrado: $sourceStub");

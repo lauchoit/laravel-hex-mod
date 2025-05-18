@@ -1,0 +1,40 @@
+<?php
+
+namespace Src\{{StudlyName}}\Infrastructure\Repository;
+
+use Src\{{StudlyName}}\Domain\Entity\{{StudlyName}};
+use Src\{{StudlyName}}\Domain\Repository\{{StudlyName}}Repository;
+use Src\{{StudlyName}}\Infrastructure\Repository\UseCases\Create{{StudlyName}}UseCaseImpl;
+
+class {{StudlyName}}RepositoryImpl extends {{StudlyName}}Repository
+{
+
+    public function __construct(
+        private readonly Create{{StudlyName}}UseCaseImpl $create,
+        ) { }
+
+    public function create(array $vehicle): Vehicle
+    {
+        return $this->create->execute($vehicle);
+    }
+
+    public function update(array $vehicle): Vehicle
+    {
+        throw new \Exception('update Not implemented');
+    }
+
+    public function deleteById(int $id): bool
+    {
+        throw new \Exception('update Not implemented');
+    }
+
+    public function findById(int $id): ?Vehicle
+    {
+        throw new \Exception('update Not implemented');
+    }
+
+    public function findAll(): array
+    {
+        throw new \Exception('update Not implemented');
+    }
+}

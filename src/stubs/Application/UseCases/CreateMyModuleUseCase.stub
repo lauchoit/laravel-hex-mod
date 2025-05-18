@@ -1,0 +1,17 @@
+<?php
+
+namespace Src\{{StudlyName}}\Application\UseCases;
+
+use Src\{{StudlyName}}\Domain\Entity\{{StudlyName}};
+use Src\{{StudlyName}}\Domain\Repository\{{StudlyName}}Repository;
+
+readonly class Create{{StudlyName}}UseCase
+{
+    public function __construct(
+        private {{StudlyName}}Repository ${{kebabName}}Repository
+    ) { }
+    public function execute(array $new{{StudlyName}}): {{StudlyName}}
+    {
+        return $this->{{kebabName}}Repository->create($new{{StudlyName}});
+    }
+}

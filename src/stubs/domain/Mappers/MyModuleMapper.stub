@@ -1,0 +1,16 @@
+<?php
+
+namespace Src\{{StudlyName}}\Domain\Mappers;
+
+class {{StudlyName}}Mapper
+{
+    public function toDomain()
+    {
+        // lógica para crear {{StudlyName}}
+    }
+
+    public function toPersistence()
+    {
+        // lógica para crear {{StudlyName}}Persistence
+    }
+}

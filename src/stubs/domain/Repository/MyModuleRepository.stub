@@ -1,0 +1,18 @@
+<?php
+
+namespace Src\{{StudlyName}}\Domain\Repository;
+
+use Src\{{StudlyName}}\Domain\Entity\{{StudlyName}};
+
+abstract class {{StudlyName}}Repository
+{
+    abstract public function create(array ${{kebabName}}): {{StudlyName}};
+
+    abstract public function update(array ${{kebabName}}): {{StudlyName}};
+
+    abstract public function deleteById(int $id): bool;
+
+    abstract public function findById(int $id): ?{{StudlyName}};
+
+    abstract public function findAll(): array;
+}

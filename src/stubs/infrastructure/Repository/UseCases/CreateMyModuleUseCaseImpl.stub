@@ -1,0 +1,11 @@
+<?php
+
+namespace Src\{{StudlyName}}\Infrastructure\Repository\UseCases;
+
+class Create{{StudlyName}}UseCaseImpl
+{
+    public function execute()
+    {
+        dd('Desde el Create{{StudlyName}}UseCaseImpl');
+    }
+}

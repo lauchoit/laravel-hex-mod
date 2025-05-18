@@ -1,8 +1,8 @@
 <?php
 
-namespace Modules\{{StudlyName}}\Application\UseCases;
+namespace Src\{{StudlyName}}\Application\UseCases;
 
-class Create{{StudlyName}}UseCase
+class UpdateById{{StudlyName}}UseCase
 {
     public function execute()
     {

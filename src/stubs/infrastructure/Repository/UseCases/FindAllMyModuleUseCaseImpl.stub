@@ -1,0 +1,11 @@
+<?php
+
+namespace Src\{{StudlyName}}\Infrastructure\Repository\UseCases;
+
+class FindAll{{StudlyName}}UseCaseImpl
+{
+    public function execute()
+    {
+        // lógica para crear {{StudlyName}}
+    }
+}

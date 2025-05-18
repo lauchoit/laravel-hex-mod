@@ -1,0 +1,11 @@
+<?php
+
+namespace Src\{{StudlyName}}\Application\UseCases;
+
+class DeleteById{{StudlyName}}UseCase
+{
+    public function execute()
+    {
+        // lógica para crear {{StudlyName}}
+    }
+}

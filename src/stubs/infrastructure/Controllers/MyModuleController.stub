@@ -1,0 +1,42 @@
+<?php
+
+namespace Src\{{StudlyName}}\Infrastructure\Controllers;
+
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Src\{{StudlyName}}\Domain\Entity\{{StudlyName}};
+use Src\{{StudlyName}}\Application\UseCases\Create{{StudlyName}}UseCase;
+
+
+class {{StudlyName}}Controller extends Controller
+{
+    public function __construct(
+        private readonly Create{{StudlyName}}UseCase $create{{StudlyName}}UseCase,
+    ) { }
+
+    public function create(Request ${{kebabName}}): {{StudlyName}}
+    {
+      $new{{StudlyName}} = $this->create{{StudlyName}}UseCase->execute(${{kebabName}}->all());
+      return $new{{StudlyName}};
+    }
+
+    public function update(Request ${{kebabName}}): {{StudlyName}}
+    {
+      throw new \Exception('update Not implemented');
+    }
+
+    public function deleteById(int $id): bool
+    {
+      throw new \Exception('update Not implemented');
+    }
+
+    public function findById(int $id): ?{{StudlyName}}
+    {
+      throw new \Exception('update Not implemented');
+    }
+
+    public function findAll(): array
+    {
+      throw new \Exception('update Not implemented');
+    }
+}

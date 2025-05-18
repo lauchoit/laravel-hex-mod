@@ -1,8 +1,41 @@
 <?php
 
-namespace Modules\{{StudlyName}}\Domain\Entity;
+namespace Src\{{StudlyName}}\Domain\Entity;
 
 class {{StudlyName}}
 {
-    // atributos de la entidad
+    private int $id;
+    private string $attribute1;
+    private string $attribute2;
+
+    public function __construct(int $id, string $attribute1, string $attribute2)
+    {
+        $this->id = $id;
+        $this->attribute1 = $attribute1;
+        $this->attribute2 = $attribute2;
+    }
+
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    public function getAttribute1(): string
+    {
+        return $this->attribute1;
+    }
+    public function getAttribute2(): string
+    {
+        return $this->attribute2;
+    }
+
+    public function setAttribute1(string $attribute1): void
+    {
+        $this->attribute1 = $attribute1;
+    }
+
+    public function setAttribute2(string $attribute2): void
+    {
+        $this->attribute2 = $attribute2;
+    }
 }
