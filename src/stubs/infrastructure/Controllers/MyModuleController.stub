@@ -3,7 +3,9 @@
 namespace Lauchoit\LaravelHexMod\{{StudlyName}}\Infrastructure\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
+use Lauchoit\LaravelHexMod\Shared\Responses\ApiResponse;
 use Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Entity\{{StudlyName}};
 use Lauchoit\LaravelHexMod\{{StudlyName}}\Application\UseCases\Create{{StudlyName}}UseCase;
 use Lauchoit\LaravelHexMod\{{StudlyName}}\Infrastructure\Requests\Create{{StudlyName}}Request;
@@ -16,10 +18,10 @@ class {{StudlyName}}Controller extends Controller
         private readonly Create{{StudlyName}}UseCase $create{{StudlyName}}UseCase,
     ) { }
 
-    public function create(Create{{StudlyName}}Request ${{kebabName}}): {{StudlyName}}
+    public function create(Create{{StudlyName}}Request ${{kebabName}}): JsonResponse
     {
       $new{{StudlyName}} = $this->create{{StudlyName}}UseCase->execute(${{kebabName}}->validated());
-      return {{StudlyName}}Resource::make($new{{StudlyName}});
+      return ApiResponse::success(ApiResponse::$SUCCESS_CREATED, {{StudlyName}}Resource::make($newClient));
     }
 
     public function update(Request ${{kebabName}}): {{StudlyName}}

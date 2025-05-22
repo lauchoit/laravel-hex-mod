@@ -1,0 +1,64 @@
+<?php
+
+
+namespace Lauchoit\LaravelHexMod\Shared\Responses;
+
+use Illuminate\Http\JsonResponse;
+
+
+class ApiResponse
+{
+    /**
+     * RESPONSES SUCCESS
+     */
+    public static $SUCCESS_CREATED = 'success.register.created';
+    /**
+     * RESPONSES ERRORS
+     */
+    public static $NOT_EMAIL = 'error.non.existent.email';
+    public static $REFERENCE_EXIST    = 'error.reference.exist';
+    public static $ERROR_PROCESSING_STRIPE = 'error.processing.stripe';
+    public static $ERROR_STORAGE_PAID = 'error.storage.paid';
+    public static $INVALID_TOKEN = 'error.invalid.token';
+    public static $ACCOUNT_NOT_EXIST = 'error.account.non.exist';
+    public static $CHANNEL_NOT_EXIST = 'error.channel.non.exist';
+    public static $VIDEO_NOT_EXIST = 'error.video.non.exist';
+    public static $DONT_HAVE_CHANNEL = 'error.non.existent.channel';
+    public static $INVALID_CREDENTIALS = 'error.invalid.credentials';
+    public static $SERVER_ERROR = 'error.server';
+    public static $NOT_FOLLOW_CHANNEL = 'error.not.following.channel';
+    public static $STORE_DATA_ERROR = 'error.store.data';
+    public static $HAVE_A_PLAN = 'error.store.has.a.plan';
+    public static $ERROR_DELETING_ACCOUNT_STRIPE = 'error.deleting.account.stripe';
+    public static $ERROR_CREATING_ACCOUNT = 'error.bank_account.creating';
+    public static $ERROR_NO_PERMISSION = 'error.you.do.not.have.permission';
+    public static $ERROR_UNAUTHORIZED  = 'error.unauthorized';
+    public static $ERROR_IS_IT_ALREADY_PUBLISHED  = 'error.is.it.already.published';
+    public static $ERROR_NOT_FOUND = 'error.not_found';
+    public static $HAVE_A_EVENT = 'error.store.has.a.event';
+    public static $EXIST_ON_EVENT = 'error.exists.event';
+
+    public static $HAVE_RECEIPT = 'error.receipt.event';
+
+    public static $CHANNEL_NAME_RESERVED = 'error.channel.name.reserved';
+
+    public static function success(string $message, mixed $data = null, $code = 200): JsonResponse
+    {
+        return self::responseGeneric($message, $data, $code, $ok = true);
+    }
+
+    public static function error(string $message, mixed $data = null, $code = 400): JsonResponse
+    {
+        return self::responseGeneric($message, $data, $code, $ok = false);
+    }
+
+    private static function responseGeneric($message, $data, $code, $ok): JsonResponse
+    {
+        return response()->json([
+            'ok' => $ok,
+            'message' => $message,
+            'data' => $data
+        ], $code);
+    }
+
+}
