@@ -2,10 +2,16 @@
 
 namespace Lauchoit\LaravelHexMod\{{StudlyName}}\Infrastructure\Repository\UseCases;
 
+use App\Models\{{StudlyName}} as {{StudlyName}}Model;
+use Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Entity\{{StudlyName}};
+use Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Mappers\{{StudlyName}}Mapper;
+
 class Create{{StudlyName}}UseCaseImpl
 {
-    public function execute()
+    public function execute(array $data{{StudlyName}}): {{StudlyName}}
     {
-        dd('Desde el Create{{StudlyName}}UseCaseImpl');
+        $new{{StudlyName}} = {{StudlyName}}Model::create($data{{StudlyName}});
+        ${{kebabName}} = {{StudlyName}}Mapper::toDomain($new{{StudlyName}});
+        return ${{kebabName}};
     }
 }

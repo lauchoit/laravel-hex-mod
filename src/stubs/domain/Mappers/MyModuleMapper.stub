@@ -2,14 +2,21 @@
 
 namespace Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Mappers;
 
+use App\Models\{{StudlyName}} as {{StudlyName}}Model;
+use Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Entity\{{StudlyName}};
+
 class {{StudlyName}}Mapper
 {
-    public function toDomain()
-    {
-        // lógica para crear {{StudlyName}}
-    }
+    public static function toDomain({{StudlyName}}Model ${{kebabName}}): {{StudlyName}}
+        {
+            return new {{StudlyName}}(
+                id: ${{kebabName}}->id,
+                attribute1: ${{kebabName}}->attribute1,
+                attribute2: ${{kebabName}}->attribute2,
+            );
+        }
 
-    public function toPersistence()
+    public static function toPersistence()
     {
         // lógica para crear {{StudlyName}}Persistence
     }

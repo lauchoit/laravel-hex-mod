@@ -1,0 +1,22 @@
+<?php
+
+namespace Lauchoit\LaravelHexMod\{{StudlyName}}\Infrastructure\Resources;
+
+use Illuminate\Http\Resources\Json\JsonResource;
+
+class {{StudlyName}}Resource extends JsonResource
+{
+    public function toArray(mixed ${{kebabName}}): array
+    {
+        $data = [
+            'id' => $this->getId(),
+            'attribute1' => $this->getAttribute1(),
+            'attribute2' => $this->getAttribute2(),
+        ];
+
+        return array_filter(
+            $data,
+            fn($value) => !($value === '' || $value === null || (is_array($value) && empty($value)))
+        );
+    }
+}

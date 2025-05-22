@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Artisan;
 
 class MakeHexModCommand extends Command
 {
-    protected $signature = 'lauchoit:make-module {name}';
+    protected $signature = 'make:hex-mod {name}';
     protected $description = 'Genera la estructura hexagonal base para un módulo';
 
     public function handle(): void
@@ -43,6 +43,8 @@ class MakeHexModCommand extends Command
             "Infrastructure/Repository/UseCases/FindAllMyModuleUseCaseImpl.stub",
             "Infrastructure/Repository/UseCases/FindByIdMyModuleUseCaseImpl.stub",
             "Infrastructure/Repository/UseCases/UpdateByIdMyModuleUseCaseImpl.stub",
+            "Infrastructure/Requests/CreateMyModuleRequest.stub",
+            "Infrastructure/Resources/MyModuleResource.stub",
             "Infrastructure/Routes/MyModuleRoutes.stub",
 //            "Infrastructure/Model/MyModuleModel.stub",
 //            "Infrastructure/Database/Factories/MyModuleFactory.stub",

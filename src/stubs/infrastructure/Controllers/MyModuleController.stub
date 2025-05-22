@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Entity\{{StudlyName}};
 use Lauchoit\LaravelHexMod\{{StudlyName}}\Application\UseCases\Create{{StudlyName}}UseCase;
+use Lauchoit\LaravelHexMod\{{StudlyName}}\Infrastructure\Requests\Create{{StudlyName}}Request;
+use Lauchoit\LaravelHexMod\{{StudlyName}}\Infrastructure\Resources\{{StudlyName}}Resource;
 
 
 class {{StudlyName}}Controller extends Controller
@@ -14,10 +16,10 @@ class {{StudlyName}}Controller extends Controller
         private readonly Create{{StudlyName}}UseCase $create{{StudlyName}}UseCase,
     ) { }
 
-    public function create(Request ${{kebabName}}): {{StudlyName}}
+    public function create(Create{{StudlyName}}Request ${{kebabName}}): {{StudlyName}}
     {
-      $new{{StudlyName}} = $this->create{{StudlyName}}UseCase->execute(${{kebabName}}->all());
-      return $new{{StudlyName}};
+      $new{{StudlyName}} = $this->create{{StudlyName}}UseCase->execute(${{kebabName}}->validated());
+      return {{StudlyName}}Resource::make($new{{StudlyName}});
     }
 
     public function update(Request ${{kebabName}}): {{StudlyName}}
