@@ -119,6 +119,16 @@ class MakeHexModCommand extends Command
                 $content = str_replace('{{validationRules}}', $rulesWrapped, $content);
             }
 
+            if (str_contains($relativePath, 'Mappers')) {
+                $mapperFields = collect($fields)->map(function ($field) use ($kebabName) {
+                    $name = explode(':', $field)[0];
+                    return "                {$name}: \${$kebabName}->{$name},";
+                })->prepend("id: \${$kebabName}->id,")
+                    ->implode("\n");
+
+                $content = str_replace('{{mapperFields}}', $mapperFields, $content);
+            }
+
             file_put_contents($targetPath, $content);
             $this->line("✅ Archivo creado: " . str_replace(base_path() . '/', '', $targetPath));
         }

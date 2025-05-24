@@ -10,9 +10,7 @@ class {{StudlyName}}Mapper
     public static function toDomain({{StudlyName}}Model ${{kebabName}}): {{StudlyName}}
         {
             return new {{StudlyName}}(
-                id: ${{kebabName}}->id,
-                attribute1: ${{kebabName}}->attribute1,
-                attribute2: ${{kebabName}}->attribute2,
+                {{mapperFields}}
             );
         }
 
