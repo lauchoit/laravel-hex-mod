@@ -5,8 +5,11 @@ namespace Lauchoit\LaravelHexMod;
 use Illuminate\Console\Command;
 use Lauchoit\LaravelHexMod\generate\GenerateApiResponse;
 use Lauchoit\LaravelHexMod\generate\GenerateEntity;
+use Lauchoit\LaravelHexMod\generate\GenerateMapper;
+use Lauchoit\LaravelHexMod\generate\GenerateRequest;
 use Lauchoit\LaravelHexMod\generate\GenerateResource;
 use Lauchoit\LaravelHexMod\generate\GenerateValidationResponse;
+use Lauchoit\LaravelHexMod\inject\InjectBindingInAppServiceProvider;
 use Illuminate\Support\{Str, Arr};
 use Illuminate\Support\Facades\{Artisan, File};
 
@@ -50,7 +53,8 @@ class MakeHexModCommand extends Command
         $this->updateModelFillable($studlyName, $fields);
         $this->updateMigrationFields($studlyName, $fields);
 
-        $this->injectBindingInAppServiceProvider($studlyName);
+//        $this->injectBindingInAppServiceProvider($studlyName);
+        InjectBindingInAppServiceProvider::run($this, $studlyName);
         $this->injectModuleRoutes($studlyName, $kebabName);
 
         $basePath = base_path("src/{$studlyName}");
@@ -113,11 +117,11 @@ class MakeHexModCommand extends Command
             );
 
             if (str_contains($relativePath, 'Requests/Create')) {
-                $content = $this->generateRequest($fields, $content);
+                $content = GenerateRequest::run($fields, $content);
             }
 
             if (str_contains($relativePath, 'Mappers')) {
-                $content = $this->generateMapper($fields, $kebabName, $content);
+                $content = GenerateMapper::run($fields, $kebabName, $content);
             }
 
             if (str_contains($relativePath, 'Entity')) {
@@ -142,47 +146,47 @@ class MakeHexModCommand extends Command
         $this->info("🎉 Módulo {$studlyName} generado correctamente.");
     }
 
-    private function injectBindingInAppServiceProvider(string $studlyName): void
-    {
-        $providerPath = base_path('app/Providers/AppServiceProvider.php');
-
-        if (!file_exists($providerPath)) {
-            $this->warn('⚠️ No se encontró AppServiceProvider.');
-            return;
-        }
-
-        $interfaceName = "{$studlyName}Repository";
-        $implName = "{$studlyName}RepositoryImpl";
-
-        $interfaceFQN = "Lauchoit\\LaravelHexMod\\{$studlyName}\\Domain\\Repository\\{$interfaceName}";
-        $implFQN = "Lauchoit\\LaravelHexMod\\{$studlyName}\\Infrastructure\\Repository\\{$implName}";
-
-        $bindLine = "\$this->app->bind({$interfaceName}::class, {$implName}::class);";
-
-        $file = file_get_contents($providerPath);
-
-        // 1. Agregar use si no está
-        if (!str_contains($file, "use {$interfaceFQN};")) {
-            $file = preg_replace(
-                '/namespace App\\\\Providers;\n/',
-                "namespace App\\Providers;\n\nuse {$interfaceFQN};\nuse {$implFQN};\n",
-                $file,
-                1
-            );
-        }
-
-        // 2. Agregar línea dentro del método boot
-        if (!str_contains($file, $bindLine)) {
-            $file = preg_replace_callback('/public function boot\(\): void\s*\{\s*/', function ($matches) use ($bindLine) {
-                return $matches[0] . "\n        " . $bindLine . "\n";
-            }, $file);
-        } else {
-            $this->info("🔁 El binding ya existe.");
-        }
-
-        file_put_contents($providerPath, $file);
-        $this->info("✅ Binding y use agregado para {$studlyName}.");
-    }
+//    private function injectBindingInAppServiceProvider(string $studlyName): void
+//    {
+//        $providerPath = base_path('app/Providers/AppServiceProvider.php');
+//
+//        if (!file_exists($providerPath)) {
+//            $this->warn('⚠️ No se encontró AppServiceProvider.');
+//            return;
+//        }
+//
+//        $interfaceName = "{$studlyName}Repository";
+//        $implName = "{$studlyName}RepositoryImpl";
+//
+//        $interfaceFQN = "Lauchoit\\LaravelHexMod\\{$studlyName}\\Domain\\Repository\\{$interfaceName}";
+//        $implFQN = "Lauchoit\\LaravelHexMod\\{$studlyName}\\Infrastructure\\Repository\\{$implName}";
+//
+//        $bindLine = "\$this->app->bind({$interfaceName}::class, {$implName}::class);";
+//
+//        $file = file_get_contents($providerPath);
+//
+//        // 1. Agregar use si no está
+//        if (!str_contains($file, "use {$interfaceFQN};")) {
+//            $file = preg_replace(
+//                '/namespace App\\\\Providers;\n/',
+//                "namespace App\\Providers;\n\nuse {$interfaceFQN};\nuse {$implFQN};\n",
+//                $file,
+//                1
+//            );
+//        }
+//
+//        // 2. Agregar línea dentro del método boot
+//        if (!str_contains($file, $bindLine)) {
+//            $file = preg_replace_callback('/public function boot\(\): void\s*\{\s*/', function ($matches) use ($bindLine) {
+//                return $matches[0] . "\n        " . $bindLine . "\n";
+//            }, $file);
+//        } else {
+//            $this->info("🔁 El binding ya existe.");
+//        }
+//
+//        file_put_contents($providerPath, $file);
+//        $this->info("✅ Binding y use agregado para {$studlyName}.");
+//    }
 
     private function injectModuleRoutes(string $studlyName, string $kebabName): void
     {
@@ -282,42 +286,6 @@ class MakeHexModCommand extends Command
 
         File::put($migrationFile->getPathname(), $migrationContent);
         $this->info("✅ Migración actualizada con campos: {$table}");
-    }
-
-    /**
-     * @param array $fields
-     * @param array|bool|string $content
-     * @return array|bool|string|string[]
-     */
-    private function generateRequest(array $fields, array|bool|string $content): string|array|bool
-    {
-        $rules = collect($fields)->map(function ($field) {
-            $name = explode(':', $field)[0];
-            return "            '{$name}' => 'required',";
-        })->implode("\n");
-
-        $rulesWrapped = "return [\n" . $rules . "\n        ];";
-
-        $content = str_replace('{{validationRules}}', $rulesWrapped, $content);
-        return $content;
-    }
-
-    /**
-     * @param array $fields
-     * @param $kebabName
-     * @param array|bool|string $content
-     * @return array|bool|string|string[]
-     */
-    private function generateMapper(array $fields, $kebabName, array|bool|string $content): string|array|bool
-    {
-        $mapperFields = collect($fields)->map(function ($field) use ($kebabName) {
-            $name = explode(':', $field)[0];
-            return "                {$name}: \${$kebabName}->{$name},";
-        })->prepend("id: \${$kebabName}->id,")
-            ->implode("\n");
-
-        $content = str_replace('{{mapperFields}}', $mapperFields, $content);
-        return $content;
     }
 
 }
