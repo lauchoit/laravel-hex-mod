@@ -21,7 +21,7 @@ class {{StudlyName}}Controller extends Controller
     public function create(Create{{StudlyName}}Request ${{kebabName}}): JsonResponse
     {
       $new{{StudlyName}} = $this->create{{StudlyName}}UseCase->execute(${{kebabName}}->validated());
-      return ApiResponse::success(ApiResponse::$SUCCESS_CREATED, {{StudlyName}}Resource::make($newClient));
+      return ApiResponse::success(ApiResponse::$SUCCESS_CREATED, {{StudlyName}}Resource::make($new{{StudlyName}}));
     }
 
     public function update(Request ${{kebabName}}): {{StudlyName}}

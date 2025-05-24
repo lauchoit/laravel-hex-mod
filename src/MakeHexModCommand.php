@@ -3,22 +3,49 @@
 namespace Lauchoit\LaravelHexMod;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\{Str, Arr};
+use Illuminate\Support\Facades\{Artisan, File};
 
 class MakeHexModCommand extends Command
 {
-    protected $signature = 'make:hex-mod {name}';
+    protected $signature = 'make:hex-mod {name} {--fields=*}';
     protected $description = 'Genera la estructura hexagonal base para un módulo';
 
     public function handle(): void
     {
         $name = $this->argument('name');
 
+        $existsSrc = base_path('src');
+        if (is_dir($existsSrc)) {
+
+        $modules = collect(scandir(base_path('src')))
+            ->filter(fn($item) => !in_array($item, ['.', '..']) && is_dir(base_path("src/{$item}")))
+            ->values()
+            ->all();
+
+        $exists = in_array(strtolower($name), array_map('strtolower', $modules));
+        if($exists) {
+            $this->warn("⚠️ This module {$name} already.");
+            return;
+            }
+        }
+
         $studlyName = Str::studly($name);
         $kebabName  = Str::kebab($name);
 
-        Artisan::call("make:model $studlyName -mf");
+        Artisan::call('make:model', [
+            'name' => $studlyName,
+            '-m' => true,
+            '-f' => true,
+        ]);
+
+        $fields = $this->option('fields');
+        if (empty($fields)) {
+            $fields = ['attribute1:string', 'attribute2:string'];
+        }
+        $this->updateModelFillable($studlyName, $fields);
+        $this->updateMigrationFields($studlyName, $fields);
+
         $this->injectBindingInAppServiceProvider($studlyName);
         $this->injectModuleRoutes($studlyName, $kebabName);
 
@@ -104,8 +131,8 @@ class MakeHexModCommand extends Command
             file_put_contents($targetPath, $content);
             $this->line("✅ Archivo creado: " . str_replace(base_path() . '/', '', $targetPath));
         }
-
-        $this->info("Recuerda ejecutar el comando `php artisan optimize` para aplicar los cambios.");
+        sleep(1);
+        Artisan::call('optimize');
     }
 
     private function injectBindingInAppServiceProvider(string $studlyName): void
@@ -191,5 +218,65 @@ class MakeHexModCommand extends Command
 
         file_put_contents($bootstrapPath, $file);
     }
+
+    private function updateModelFillable(string $studlyName, array $fields): void
+    {
+        $modelPath = app_path("Models/{$studlyName}.php");
+        if (!file_exists($modelPath)) {
+            $modelPath = app_path("{$studlyName}.php");
+        }
+
+        $fillable = collect($fields)->map(fn($f) => "'" . explode(':', $f)[0] . "'")->implode(', ');
+        $file = file_get_contents($modelPath);
+
+        $file = preg_replace(
+            '/{/',
+            "{\n    protected \$fillable = [{$fillable}];\n",
+            $file,
+            1
+        );
+
+        file_put_contents($modelPath, $file);
+        $this->info("✅ Fillable actualizado en el modelo {$studlyName}.");
+    }
+
+    private function updateMigrationFields(string $studlyName, array $fields): void
+    {
+        $table = Str::snake(Str::pluralStudly($studlyName));
+
+        $migrationFile = collect(File::files(database_path('migrations')))
+            ->filter(fn($file) => str_contains($file->getFilename(), "create_{$table}_table"))
+            ->first();
+
+        if (!$migrationFile) {
+            $this->warn("⚠️ No se encontró la migración para {$table}");
+            return;
+        }
+
+        $migrationContent = File::get($migrationFile->getPathname());
+
+        $columnLines = collect($fields)->map(function ($field) {
+            [$name, $type] = explode(':', $field);
+            return match ($type) {
+                'string' => "\$table->string('$name');",
+                'text' => "\$table->text('$name');",
+                'integer' => "\$table->integer('$name');",
+                'decimal' => "\$table->decimal('$name', 8, 2);",
+                'boolean' => "\$table->boolean('$name');",
+                default => "\$table->$type('$name');",
+            };
+        })->implode("\n            ");
+
+        $migrationContent = preg_replace(
+            '/\$table->id\(\);\n/',
+            "\$table->id();\n            {$columnLines}\n",
+            $migrationContent
+        );
+
+        File::put($migrationFile->getPathname(), $migrationContent);
+        $this->info("✅ Migración actualizada con campos: {$table}");
+    }
+
+
 
 }
