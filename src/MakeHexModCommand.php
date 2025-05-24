@@ -109,83 +109,19 @@ class MakeHexModCommand extends Command
             );
 
             if (str_contains($relativePath, 'Requests/Create')) {
-                $rules = collect($fields)->map(function ($field) {
-                    $name = explode(':', $field)[0];
-                    return "        '{$name}' => 'required',";
-                })->implode("\n");
-
-                $rulesWrapped = "return [\n" . $rules . "\n    ];";
-
-                $content = str_replace('{{validationRules}}', $rulesWrapped, $content);
+                $content = $this->generateRequest($fields, $content);
             }
 
             if (str_contains($relativePath, 'Mappers')) {
-                $mapperFields = collect($fields)->map(function ($field) use ($kebabName) {
-                    $name = explode(':', $field)[0];
-                    return "                {$name}: \${$kebabName}->{$name},";
-                })->prepend("id: \${$kebabName}->id,")
-                    ->implode("\n");
-
-                $content = str_replace('{{mapperFields}}', $mapperFields, $content);
+                $content = $this->generateMapper($fields, $kebabName, $content);
             }
 
             if (str_contains($relativePath, 'Entity')) {
-                $properties = collect($fields)->map(function ($field) {
-                    [$name, $type] = explode(':', $field);
-                    return "    private {$this->mapPhpType($type)} \${$name};";
-                })->prepend("    private int \$id;")->implode("\n");
-
-                $constructorParams = collect($fields)->map(function ($field) {
-                    [$name, $type] = explode(':', $field);
-                    return $this->mapPhpType($type) . " \${$name}";
-                })->prepend("int \$id")->implode(', ');
-
-                $constructorBody = collect($fields)->map(function ($field) {
-                    $name = explode(':', $field)[0];
-                    return "        \$this->{$name} = \${$name};";
-                })->prepend("        \$this->id = \$id;")->implode("\n");
-
-                $gettersSetters = collect($fields)->map(function ($field) {
-                    [$name, $type] = explode(':', $field);
-                    $ucName = Str::studly($name);
-                    $phpType = $this->mapPhpType($type);
-
-                    return <<<EOT
-
-                        public function get{$ucName}(): {$phpType}
-                        {
-                            return \$this->{$name};
-                        }
-                    
-                        public function set{$ucName}({$phpType} \${$name}): void
-                        {
-                            \$this->{$name} = \${$name};
-                        }
-                    EOT;
-                                    })->prepend(<<<EOT
-                    
-                        public function getId(): int
-                        {
-                            return \$this->id;
-                        }
-                    EOT)->implode("\n");
-
-                $content = str_replace(
-                    ['{{properties}}', '{{constructorParams}}', '{{constructorBody}}', '{{gettersSetters}}'],
-                    [$properties, $constructorParams, $constructorBody, $gettersSetters],
-                    $content
-                );
+                $content = $this->generateEntity($fields, $content);
             }
 
             if (str_contains($relativePath, 'Resources')) {
-                $resourceFields = collect($fields)->map(function ($field) {
-                    $name = explode(':', $field)[0];
-                    $method = 'get' . Str::studly($name);
-                    return "            '{$name}' => \$this->{$method}(),";
-                })->prepend("'id' => \$this->getId(),")
-                    ->implode("\n");
-
-                $content = str_replace('{{resourceFields}}', $resourceFields, $content);
+                $content = $this->generateResource($fields, $content);
             }
 
 
@@ -193,27 +129,12 @@ class MakeHexModCommand extends Command
             $this->line("✅ Archivo creado: " . str_replace(base_path() . '/', '', $targetPath));
         }
 
-        $this->info("🎉 Módulo {$studlyName} generado correctamente.");
+        $this->generateApiResponse();
+        $this->generateValidationResponse();
 
-
-        $basePath = base_path("src/Shared/Responses/ApiResponse.stub");
-        $stubPath = __DIR__ . '/stubs/shared/Responses/ApiResponse.stub';
-        $targetPath = str_replace('.stub', '.php', $basePath);
-        if (!file_exists($stubPath)) {
-            $this->warn("❌ Stub no encontrado: $stubPath");
-        } else {
-            $dir = dirname($targetPath);
-            if (!is_dir($dir)) {
-                if (!mkdir($dir, 0755, true) && !is_dir($dir)) {
-                    throw new \RuntimeException(sprintf('Directory "%s" was not created', $dir));
-                }
-            }
-            $content = file_get_contents($stubPath);
-            file_put_contents($targetPath, $content);
-            $this->line("✅ Archivo creado: " . str_replace(base_path() . '/', '', $targetPath));
-        }
         sleep(1);
         Artisan::call('optimize');
+        $this->info("🎉 Módulo {$studlyName} generado correctamente.");
     }
 
     private function injectBindingInAppServiceProvider(string $studlyName): void
@@ -367,6 +288,162 @@ class MakeHexModCommand extends Command
             'boolean', 'bool' => 'bool',
             default => 'mixed',
         };
+    }
+
+    /**
+     * @param array $fields
+     * @param array|bool|string $content
+     * @return array|bool|string|string[]
+     */
+    private function generateRequest(array $fields, array|bool|string $content): string|array|bool
+    {
+        $rules = collect($fields)->map(function ($field) {
+            $name = explode(':', $field)[0];
+            return "            '{$name}' => 'required',";
+        })->implode("\n");
+
+        $rulesWrapped = "return [\n" . $rules . "\n        ];";
+
+        $content = str_replace('{{validationRules}}', $rulesWrapped, $content);
+        return $content;
+    }
+
+    /**
+     * @param array $fields
+     * @param $kebabName
+     * @param array|bool|string $content
+     * @return array|bool|string|string[]
+     */
+    private function generateMapper(array $fields, $kebabName, array|bool|string $content): string|array|bool
+    {
+        $mapperFields = collect($fields)->map(function ($field) use ($kebabName) {
+            $name = explode(':', $field)[0];
+            return "                {$name}: \${$kebabName}->{$name},";
+        })->prepend("id: \${$kebabName}->id,")
+            ->implode("\n");
+
+        $content = str_replace('{{mapperFields}}', $mapperFields, $content);
+        return $content;
+    }
+
+    /**
+     * @param array $fields
+     * @param array|bool|string $content
+     * @return array|bool|string|string[]
+     */
+    private function generateEntity(array $fields, array|bool|string $content): string|array|bool
+    {
+        $properties = collect($fields)->map(function ($field) {
+            [$name, $type] = explode(':', $field);
+            return "    private {$this->mapPhpType($type)} \${$name};";
+        })->prepend("    private int \$id;")->implode("\n");
+
+        $constructorParams = collect($fields)->map(function ($field) {
+            [$name, $type] = explode(':', $field);
+            return $this->mapPhpType($type) . " \${$name}";
+        })->prepend("int \$id")->implode(', ');
+
+        $constructorBody = collect($fields)->map(function ($field) {
+            $name = explode(':', $field)[0];
+            return "        \$this->{$name} = \${$name};";
+        })->prepend("        \$this->id = \$id;")->implode("\n");
+
+        $gettersSetters = collect($fields)->map(function ($field) {
+            [$name, $type] = explode(':', $field);
+            $ucName = Str::studly($name);
+            $phpType = $this->mapPhpType($type);
+
+            return <<<EOT
+
+                        public function get{$ucName}(): {$phpType}
+                        {
+                            return \$this->{$name};
+                        }
+                    
+                        public function set{$ucName}({$phpType} \${$name}): void
+                        {
+                            \$this->{$name} = \${$name};
+                        }
+                    EOT;
+        })->prepend(<<<EOT
+                    
+                        public function getId(): int
+                        {
+                            return \$this->id;
+                        }
+                    EOT
+        )->implode("\n");
+
+        $content = str_replace(
+            ['{{properties}}', '{{constructorParams}}', '{{constructorBody}}', '{{gettersSetters}}'],
+            [$properties, $constructorParams, $constructorBody, $gettersSetters],
+            $content
+        );
+        return $content;
+    }
+
+    /**
+     * @param array $fields
+     * @param array|bool|string $content
+     * @return array|bool|string|string[]
+     */
+    private function generateResource(array $fields, array|bool|string $content): string|array|bool
+    {
+        $resourceFields = collect($fields)->map(function ($field) {
+            $name = explode(':', $field)[0];
+            $method = 'get' . Str::studly($name);
+            return "            '{$name}' => \$this->{$method}(),";
+        })->prepend("'id' => \$this->getId(),")
+            ->implode("\n");
+
+        $content = str_replace('{{resourceFields}}', $resourceFields, $content);
+        return $content;
+    }
+
+    /**
+     * @return void
+     */
+    private function generateApiResponse(): void
+    {
+        $basePath = base_path("src/Shared/Responses/ApiResponse.stub");
+        $stubPath = __DIR__ . '/stubs/shared/Responses/ApiResponse.stub';
+        $targetPath = str_replace('.stub', '.php', $basePath);
+        if (!file_exists($stubPath)) {
+            $this->warn("❌ Stub no encontrado: $stubPath");
+        } else {
+            $dir = dirname($targetPath);
+            if (!is_dir($dir)) {
+                if (!mkdir($dir, 0755, true) && !is_dir($dir)) {
+                    throw new \RuntimeException(sprintf('Directory "%s" was not created', $dir));
+                }
+            }
+            $content = file_get_contents($stubPath);
+            file_put_contents($targetPath, $content);
+            $this->line("✅ Archivo creado: " . str_replace(base_path() . '/', '', $targetPath));
+        }
+    }
+
+    /**
+     * @return void
+     */
+    private function generateValidationResponse(): void
+    {
+        $basePath = base_path("src/Shared/Responses/ValidationResponse.stub");
+        $stubPath = __DIR__ . '/stubs/shared/Responses/ValidationResponse.stub';
+        $targetPath = str_replace('.stub', '.php', $basePath);
+        if (!file_exists($stubPath)) {
+            $this->warn("❌ Stub no encontrado: $stubPath");
+        } else {
+            $dir = dirname($targetPath);
+            if (!is_dir($dir)) {
+                if (!mkdir($dir, 0755, true) && !is_dir($dir)) {
+                    throw new \RuntimeException(sprintf('Directory "%s" was not created', $dir));
+                }
+            }
+            $content = file_get_contents($stubPath);
+            file_put_contents($targetPath, $content);
+            $this->line("✅ Archivo creado: " . str_replace(base_path() . '/', '', $targetPath));
+        }
     }
 
 }

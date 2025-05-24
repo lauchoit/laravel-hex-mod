@@ -11,7 +11,6 @@ class Create{{StudlyName}}UseCaseImpl
     public function execute(array $data{{StudlyName}}): {{StudlyName}}
     {
         $new{{StudlyName}} = {{StudlyName}}Model::create($data{{StudlyName}});
-        ${{kebabName}} = {{StudlyName}}Mapper::toDomain($new{{StudlyName}});
-        return ${{kebabName}};
+        return {{StudlyName}}Mapper::toDomain($new{{StudlyName}});
     }
 }

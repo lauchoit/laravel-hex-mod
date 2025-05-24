@@ -1,0 +1,35 @@
+<?php
+
+namespace Lauchoit\LaravelHexMod\Shared\Responses;
+
+use Illuminate\Contracts\Validation\Validator;
+
+trait ValidationResponse
+{
+    /**
+     * The message to be returned in the response.
+     *
+     * @var string
+     */
+    private string $messageLogin = 'Validation failed.';
+
+    /**
+     * Handle a failed validation attempt.
+     *
+     * @param  \Illuminate\Contracts\Validation\Validator  $validator
+     * @return void
+     */
+
+    protected function failedValidation(Validator $validator): void
+    {
+        $exception = $validator->getException();
+
+        throw (new $exception($validator,
+            response()->json([
+                'ok' => false,
+                'message' => $this->messageLogin,
+                'data' => $validator->errors(),
+            ], 422)
+        ));
+    }
+}
