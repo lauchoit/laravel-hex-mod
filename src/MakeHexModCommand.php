@@ -129,6 +129,66 @@ class MakeHexModCommand extends Command
                 $content = str_replace('{{mapperFields}}', $mapperFields, $content);
             }
 
+            if (str_contains($relativePath, 'Entity')) {
+                $properties = collect($fields)->map(function ($field) {
+                    [$name, $type] = explode(':', $field);
+                    return "    private {$this->mapPhpType($type)} \${$name};";
+                })->prepend("    private int \$id;")->implode("\n");
+
+                $constructorParams = collect($fields)->map(function ($field) {
+                    [$name, $type] = explode(':', $field);
+                    return $this->mapPhpType($type) . " \${$name}";
+                })->prepend("int \$id")->implode(', ');
+
+                $constructorBody = collect($fields)->map(function ($field) {
+                    $name = explode(':', $field)[0];
+                    return "        \$this->{$name} = \${$name};";
+                })->prepend("        \$this->id = \$id;")->implode("\n");
+
+                $gettersSetters = collect($fields)->map(function ($field) {
+                    [$name, $type] = explode(':', $field);
+                    $ucName = Str::studly($name);
+                    $phpType = $this->mapPhpType($type);
+
+                    return <<<EOT
+
+                        public function get{$ucName}(): {$phpType}
+                        {
+                            return \$this->{$name};
+                        }
+                    
+                        public function set{$ucName}({$phpType} \${$name}): void
+                        {
+                            \$this->{$name} = \${$name};
+                        }
+                    EOT;
+                                    })->prepend(<<<EOT
+                    
+                        public function getId(): int
+                        {
+                            return \$this->id;
+                        }
+                    EOT)->implode("\n");
+
+                $content = str_replace(
+                    ['{{properties}}', '{{constructorParams}}', '{{constructorBody}}', '{{gettersSetters}}'],
+                    [$properties, $constructorParams, $constructorBody, $gettersSetters],
+                    $content
+                );
+            }
+
+            if (str_contains($relativePath, 'Resources')) {
+                $resourceFields = collect($fields)->map(function ($field) {
+                    $name = explode(':', $field)[0];
+                    $method = 'get' . Str::studly($name);
+                    return "            '{$name}' => \$this->{$method}(),";
+                })->prepend("'id' => \$this->getId(),")
+                    ->implode("\n");
+
+                $content = str_replace('{{resourceFields}}', $resourceFields, $content);
+            }
+
+
             file_put_contents($targetPath, $content);
             $this->line("✅ Archivo creado: " . str_replace(base_path() . '/', '', $targetPath));
         }
@@ -298,6 +358,15 @@ class MakeHexModCommand extends Command
         $this->info("✅ Migración actualizada con campos: {$table}");
     }
 
-
+    private function mapPhpType(string $type): string
+    {
+        return match ($type) {
+            'string', 'text' => 'string',
+            'integer', 'int' => 'int',
+            'decimal', 'float', 'double' => 'float',
+            'boolean', 'bool' => 'bool',
+            default => 'mixed',
+        };
+    }
 
 }
