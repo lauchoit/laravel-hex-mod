@@ -21,9 +21,6 @@ class Create{{StudlyName}}Request extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'attribute1' => 'required|string|max:255',
-            'attribute2' => 'required|string|max:255',
-        ];
+        {{validationRules}}
     }
 }

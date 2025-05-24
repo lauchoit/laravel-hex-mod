@@ -108,6 +108,17 @@ class MakeHexModCommand extends Command
                 $content
             );
 
+            if (str_contains($relativePath, 'Requests/Create')) {
+                $rules = collect($fields)->map(function ($field) {
+                    $name = explode(':', $field)[0];
+                    return "        '{$name}' => 'required',";
+                })->implode("\n");
+
+                $rulesWrapped = "return [\n" . $rules . "\n    ];";
+
+                $content = str_replace('{{validationRules}}', $rulesWrapped, $content);
+            }
+
             file_put_contents($targetPath, $content);
             $this->line("✅ Archivo creado: " . str_replace(base_path() . '/', '', $targetPath));
         }
