@@ -6,9 +6,9 @@ use Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Entity\{{StudlyName}};
 
 abstract class {{StudlyName}}Repository
 {
-    abstract public function create(array ${{kebabName}}): {{StudlyName}};
+    abstract public function create(array ${{camelName}}): {{StudlyName}};
 
-    abstract public function update(array ${{kebabName}}): {{StudlyName}};
+    abstract public function update(array ${{camelName}}): {{StudlyName}};
 
     abstract public function deleteById(int $id): bool;
 

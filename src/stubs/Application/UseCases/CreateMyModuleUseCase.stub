@@ -8,10 +8,10 @@ use Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Repository\{{StudlyName}}Reposi
 readonly class Create{{StudlyName}}UseCase
 {
     public function __construct(
-        private {{StudlyName}}Repository ${{kebabName}}Repository
+        private {{StudlyName}}Repository ${{camelName}}Repository
     ) { }
     public function execute(array $new{{StudlyName}}): {{StudlyName}}
     {
-        return $this->{{kebabName}}Repository->create($new{{StudlyName}});
+        return $this->{{camelName}}Repository->create($new{{StudlyName}});
     }
 }

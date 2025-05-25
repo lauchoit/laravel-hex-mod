@@ -18,13 +18,13 @@ class {{StudlyName}}Controller extends Controller
         private readonly Create{{StudlyName}}UseCase $create{{StudlyName}}UseCase,
     ) { }
 
-    public function create(Create{{StudlyName}}Request ${{kebabName}}): JsonResponse
+    public function create(Create{{StudlyName}}Request ${{camelName}}): JsonResponse
     {
-      $new{{StudlyName}} = $this->create{{StudlyName}}UseCase->execute(${{kebabName}}->validated());
+      $new{{StudlyName}} = $this->create{{StudlyName}}UseCase->execute(${{camelName}}->validated());
       return ApiResponse::success(ApiResponse::$SUCCESS_CREATED, {{StudlyName}}Resource::make($new{{StudlyName}}));
     }
 
-    public function update(Request ${{kebabName}}): {{StudlyName}}
+    public function update(Request ${{camelName}}): {{StudlyName}}
     {
       throw new \Exception('update Not implemented');
     }

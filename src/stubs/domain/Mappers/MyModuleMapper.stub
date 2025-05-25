@@ -7,7 +7,7 @@ use Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Entity\{{StudlyName}};
 
 class {{StudlyName}}Mapper
 {
-    public static function toDomain({{StudlyName}}Model ${{kebabName}}): {{StudlyName}}
+    public static function toDomain({{StudlyName}}Model ${{camelName}}): {{StudlyName}}
         {
             return new {{StudlyName}}(
                 {{mapperFields}}

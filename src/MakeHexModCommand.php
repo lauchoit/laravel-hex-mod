@@ -42,6 +42,7 @@ class MakeHexModCommand extends Command
 
         $studlyName = Str::studly($name);
         $kebabName  = Str::kebab($name);
+        $camelName = Str::camel($name);
 
         Artisan::call('make:model', [
             'name' => $studlyName,
@@ -121,8 +122,8 @@ class MakeHexModCommand extends Command
 
             $content = file_get_contents($sourceStub);
             $content = str_replace(
-                ['{{StudlyName}}', '{{kebabName}}'],
-                [$studlyName, $kebabName],
+                ['{{StudlyName}}', '{{kebabName}}', '{{camelName}}'],
+                [$studlyName, $kebabName, $camelName],
                 $content
             );
 
@@ -131,7 +132,7 @@ class MakeHexModCommand extends Command
             }
 
             if (str_contains($relativePath, 'Mappers')) {
-                $content = GenerateMapper::run($fields, $kebabName, $content);
+                $content = GenerateMapper::run($fields, $camelName, $content);
             }
 
             if (str_contains($relativePath, 'Entity')) {

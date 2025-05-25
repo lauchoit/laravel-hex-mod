@@ -13,12 +13,12 @@ class {{StudlyName}}RepositoryImpl extends {{StudlyName}}Repository
         private readonly Create{{StudlyName}}UseCaseImpl $create,
         ) { }
 
-    public function create(array ${{kebabName}}): {{StudlyName}}
+    public function create(array ${{camelName}}): {{StudlyName}}
     {
-        return $this->create->execute(${{kebabName}});
+        return $this->create->execute(${{camelName}});
     }
 
-    public function update(array ${{kebabName}}): {{StudlyName}}
+    public function update(array ${{camelName}}): {{StudlyName}}
     {
         throw new \Exception('update Not implemented');
     }

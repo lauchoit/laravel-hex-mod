@@ -6,7 +6,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class {{StudlyName}}Resource extends JsonResource
 {
-    public function toArray(mixed ${{kebabName}}): array
+    public function toArray(mixed ${{camelName}}): array
     {
         $data = [
             {{resourceFields}}
