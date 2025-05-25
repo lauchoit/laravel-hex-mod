@@ -11,7 +11,7 @@ trait ValidationResponse
      *
      * @var string
      */
-    private string $messageLogin = 'Validation failed.';
+    private string $messageLogin = 'validation.failed.';
 
     /**
      * Handle a failed validation attempt.

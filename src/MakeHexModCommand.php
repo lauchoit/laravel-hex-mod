@@ -10,6 +10,9 @@ use Lauchoit\LaravelHexMod\generate\GenerateRequest;
 use Lauchoit\LaravelHexMod\generate\GenerateResource;
 use Lauchoit\LaravelHexMod\generate\GenerateValidationResponse;
 use Lauchoit\LaravelHexMod\inject\InjectBindingInAppServiceProvider;
+use Lauchoit\LaravelHexMod\inject\InjectModulesRoutes;
+use Lauchoit\LaravelHexMod\updates\UpdateMigrationFields;
+use Lauchoit\LaravelHexMod\updates\UpdateModelFillable;
 use Illuminate\Support\{Str, Arr};
 use Illuminate\Support\Facades\{Artisan, File};
 
@@ -50,12 +53,11 @@ class MakeHexModCommand extends Command
         if (empty($fields)) {
             $fields = ['attribute1:string', 'attribute2:string'];
         }
-        $this->updateModelFillable($studlyName, $fields);
-        $this->updateMigrationFields($studlyName, $fields);
+        UpdateModelFillable::run($this, $studlyName, $fields);
+        UpdateMigrationFields::run($this, $studlyName, $fields);
 
-//        $this->injectBindingInAppServiceProvider($studlyName);
         InjectBindingInAppServiceProvider::run($this, $studlyName);
-        $this->injectModuleRoutes($studlyName, $kebabName);
+        InjectModulesRoutes::run($this, $studlyName, $kebabName);
 
         $basePath = base_path("src/{$studlyName}");
         $stubPath = __DIR__ . '/stubs';
@@ -81,9 +83,6 @@ class MakeHexModCommand extends Command
             "Infrastructure/Requests/CreateMyModuleRequest.stub",
             "Infrastructure/Resources/MyModuleResource.stub",
             "Infrastructure/Routes/MyModuleRoutes.stub",
-//            "Infrastructure/Model/MyModuleModel.stub",
-//            "Infrastructure/Database/Factories/MyModuleFactory.stub",
-//            "Infrastructure/Database/Migrations/0001_01_01_000000_create_myModule_table.stub",
         ]);
 
         foreach ($files as $relativePath) {
@@ -145,147 +144,4 @@ class MakeHexModCommand extends Command
         Artisan::call('optimize');
         $this->info("🎉 Módulo {$studlyName} generado correctamente.");
     }
-
-//    private function injectBindingInAppServiceProvider(string $studlyName): void
-//    {
-//        $providerPath = base_path('app/Providers/AppServiceProvider.php');
-//
-//        if (!file_exists($providerPath)) {
-//            $this->warn('⚠️ No se encontró AppServiceProvider.');
-//            return;
-//        }
-//
-//        $interfaceName = "{$studlyName}Repository";
-//        $implName = "{$studlyName}RepositoryImpl";
-//
-//        $interfaceFQN = "Lauchoit\\LaravelHexMod\\{$studlyName}\\Domain\\Repository\\{$interfaceName}";
-//        $implFQN = "Lauchoit\\LaravelHexMod\\{$studlyName}\\Infrastructure\\Repository\\{$implName}";
-//
-//        $bindLine = "\$this->app->bind({$interfaceName}::class, {$implName}::class);";
-//
-//        $file = file_get_contents($providerPath);
-//
-//        // 1. Agregar use si no está
-//        if (!str_contains($file, "use {$interfaceFQN};")) {
-//            $file = preg_replace(
-//                '/namespace App\\\\Providers;\n/',
-//                "namespace App\\Providers;\n\nuse {$interfaceFQN};\nuse {$implFQN};\n",
-//                $file,
-//                1
-//            );
-//        }
-//
-//        // 2. Agregar línea dentro del método boot
-//        if (!str_contains($file, $bindLine)) {
-//            $file = preg_replace_callback('/public function boot\(\): void\s*\{\s*/', function ($matches) use ($bindLine) {
-//                return $matches[0] . "\n        " . $bindLine . "\n";
-//            }, $file);
-//        } else {
-//            $this->info("🔁 El binding ya existe.");
-//        }
-//
-//        file_put_contents($providerPath, $file);
-//        $this->info("✅ Binding y use agregado para {$studlyName}.");
-//    }
-
-    private function injectModuleRoutes(string $studlyName, string $kebabName): void
-    {
-        $bootstrapPath = base_path('bootstrap/app.php');
-
-        if (!file_exists($bootstrapPath)) {
-            $this->warn('⚠️ No se encontró bootstrap/app.php');
-            return;
-        }
-
-        $routeEntry = "require base_path('src/{$kebabName}/infrastructure/Routes/{$studlyName}Routes.php'),";
-
-        $file = file_get_contents($bootstrapPath);
-
-        // Ya está incluido
-        if (str_contains($file, $routeEntry)) {
-            $this->info("🔁 Rutas de {$studlyName} ya están registradas.");
-            return;
-        }
-
-        // Si ya existe el bloque then: fn () => [ ... ]
-        if (preg_match('/then:\s*fn\s*\(\)\s*=>\s*\[\s*(.*?)\]/s', $file, $matches)) {
-            // Insertar justo antes del cierre del array
-            $updatedBlock = rtrim($matches[1]) . "\n            {$routeEntry}";
-            $file = preg_replace(
-                '/then:\s*fn\s*\(\)\s*=>\s*\[\s*.*?\]/s',
-                "then: fn () => [\n            {$updatedBlock}\n        ]",
-                $file
-            );
-            $this->info("✅ Ruta agregada a bloque existente: {$routeEntry}");
-        } else {
-            // Agregar nuevo bloque `then: fn () => [ ... ]`
-            $file = preg_replace_callback(
-                '/withRouting\((.*?)\)/s',
-                fn ($matches) => "withRouting({$matches[1]}\n        then: fn () => [\n            {$routeEntry}\n        ])",
-                $file
-            );
-            $this->info("✅ Bloque then creado con primera ruta: {$routeEntry}");
-        }
-
-        file_put_contents($bootstrapPath, $file);
-    }
-
-    private function updateModelFillable(string $studlyName, array $fields): void
-    {
-        $modelPath = app_path("Models/{$studlyName}.php");
-        if (!file_exists($modelPath)) {
-            $modelPath = app_path("{$studlyName}.php");
-        }
-
-        $fillable = collect($fields)->map(fn($f) => "'" . explode(':', $f)[0] . "'")->implode(', ');
-        $file = file_get_contents($modelPath);
-
-        $file = preg_replace(
-            '/{/',
-            "{\n    protected \$fillable = [{$fillable}];\n",
-            $file,
-            1
-        );
-
-        file_put_contents($modelPath, $file);
-        $this->info("✅ Fillable actualizado en el modelo {$studlyName}.");
-    }
-
-    private function updateMigrationFields(string $studlyName, array $fields): void
-    {
-        $table = Str::snake(Str::pluralStudly($studlyName));
-
-        $migrationFile = collect(File::files(database_path('migrations')))
-            ->filter(fn($file) => str_contains($file->getFilename(), "create_{$table}_table"))
-            ->first();
-
-        if (!$migrationFile) {
-            $this->warn("⚠️ No se encontró la migración para {$table}");
-            return;
-        }
-
-        $migrationContent = File::get($migrationFile->getPathname());
-
-        $columnLines = collect($fields)->map(function ($field) {
-            [$name, $type] = explode(':', $field);
-            return match ($type) {
-                'string' => "\$table->string('$name');",
-                'text' => "\$table->text('$name');",
-                'integer' => "\$table->integer('$name');",
-                'decimal' => "\$table->decimal('$name', 8, 2);",
-                'boolean' => "\$table->boolean('$name');",
-                default => "\$table->$type('$name');",
-            };
-        })->implode("\n            ");
-
-        $migrationContent = preg_replace(
-            '/\$table->id\(\);\n/',
-            "\$table->id();\n            {$columnLines}\n",
-            $migrationContent
-        );
-
-        File::put($migrationFile->getPathname(), $migrationContent);
-        $this->info("✅ Migración actualizada con campos: {$table}");
-    }
-
 }
