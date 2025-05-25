@@ -16,7 +16,7 @@ class InjectModulesRoutes
             return;
         }
 
-        $routeEntry = "require base_path('src/{$kebabName}/infrastructure/Routes/{$studlyName}Routes.php'),";
+        $routeEntry = "require base_path('src/{$studlyName}/Infrastructure/Routes/{$studlyName}Routes.php'),";
 
         $file = file_get_contents($bootstrapPath);
 

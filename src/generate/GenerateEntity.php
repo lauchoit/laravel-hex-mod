@@ -65,10 +65,11 @@ class GenerateEntity
     private static function mapPhpType(string $type): string
     {
         return match ($type) {
-            'string', 'text' => 'string',
-            'integer', 'int' => 'int',
-            'decimal', 'float', 'double' => 'float',
-            'boolean', 'bool' => 'bool',
+            'string', 'text', 'longText', 'json' => 'string',
+            'integer' => 'int',
+            'float' => 'float',
+            'date', 'datetime' => '\Carbon\Carbon',
+            'boolean' => 'bool',
             default => 'mixed',
         };
     }

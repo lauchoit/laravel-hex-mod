@@ -53,6 +53,17 @@ class MakeHexModCommand extends Command
         if (empty($fields)) {
             $fields = ['attribute1:string', 'attribute2:string'];
         }
+
+        $validTypes = ['string', 'integer', 'float', 'date', 'datetime', 'json', 'boolean', 'text', 'longText'];
+
+        foreach ($fields as $field) {
+            $parts = explode(':', $field);
+            if (count($parts) !== 2 || !in_array($parts[1], $validTypes)) {
+                $this->error("❌ Tipo inválido para el campo '{$field}'. Tipos permitidos: " . implode(', ', $validTypes));
+                return;
+            }
+        }
+
         UpdateModelFillable::run($this, $studlyName, $fields);
         UpdateMigrationFields::run($this, $studlyName, $fields);
 
