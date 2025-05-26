@@ -11,7 +11,8 @@ class ApiResponse
     /**
      * RESPONSES SUCCESS
      */
-    public static $SUCCESS_CREATED = 'success.register.created';
+    public static $SUCCESS_CREATED = 'success.created';
+    public static $SUCCESS_SEARCH = 'success.search';
     /**
      * RESPONSES ERRORS
      */

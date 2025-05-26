@@ -10,6 +10,11 @@ readonly class Create{{StudlyName}}UseCase
     public function __construct(
         private {{StudlyName}}Repository ${{camelName}}Repository
     ) { }
+
+    /**
+     * @param array $new{{StudlyName}}
+     * @return {{StudlyName}}
+     */
     public function execute(array $new{{StudlyName}}): {{StudlyName}}
     {
         return $this->{{camelName}}Repository->create($new{{StudlyName}});

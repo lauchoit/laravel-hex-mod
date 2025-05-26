@@ -5,27 +5,30 @@ namespace Lauchoit\LaravelHexMod\{{StudlyName}}\Infrastructure\Repository;
 use Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Entity\{{StudlyName}};
 use Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Repository\{{StudlyName}}Repository;
 use Lauchoit\LaravelHexMod\{{StudlyName}}\Infrastructure\Repository\UseCases\Create{{StudlyName}}UseCaseImpl;
+use Lauchoit\LaravelHexMod\{{StudlyName}}\Infrastructure\Repository\UseCases\FindAll{{StudlyName}}UseCaseImpl;
 
 class {{StudlyName}}RepositoryImpl extends {{StudlyName}}Repository
 {
 
     public function __construct(
         private readonly Create{{StudlyName}}UseCaseImpl $create,
+        private readonly FindAll{{StudlyName}}UseCaseImpl $findAll,
         ) { }
 
+    /**
+     * @return {{StudlyName}}
+     */
     public function create(array ${{camelName}}): {{StudlyName}}
     {
         return $this->create->execute(${{camelName}});
     }
 
-    public function update(array ${{camelName}}): {{StudlyName}}
+    /**
+     * @return {{StudlyName}}[]
+     */
+    public function findAll(): array
     {
-        throw new \Exception('update Not implemented');
-    }
-
-    public function deleteById(int $id): bool
-    {
-        throw new \Exception('update Not implemented');
+        return $this->findAll->execute();
     }
 
     public function findById(int $id): ?{{StudlyName}}
@@ -33,7 +36,15 @@ class {{StudlyName}}RepositoryImpl extends {{StudlyName}}Repository
         throw new \Exception('update Not implemented');
     }
 
-    public function findAll(): array
+    /**
+     * @return {{StudlyName}}
+     */
+    public function update(array ${{camelName}}): {{StudlyName}}
+    {
+        throw new \Exception('update Not implemented');
+    }
+
+    public function deleteById(int $id): bool
     {
         throw new \Exception('update Not implemented');
     }

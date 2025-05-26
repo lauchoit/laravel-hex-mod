@@ -8,6 +8,10 @@ use Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Mappers\{{StudlyName}}Mapper;
 
 class Create{{StudlyName}}UseCaseImpl
 {
+    /**
+     * @param array $dataClient
+     * @return Client
+     */
     public function execute(array $data{{StudlyName}}): {{StudlyName}}
     {
         $new{{StudlyName}} = {{StudlyName}}Model::create($data{{StudlyName}});

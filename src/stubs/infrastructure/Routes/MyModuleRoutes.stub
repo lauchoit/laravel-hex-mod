@@ -5,4 +5,5 @@ use Lauchoit\LaravelHexMod\{{StudlyName}}\Infrastructure\Controllers\{{StudlyNam
 
 Route::prefix('api/{{kebabName}}')->group(function () {
     Route::post('/', [{{StudlyName}}Controller::class, 'create'])->name('{{kebabName}}.create');
+    Route::get('/', [{{StudlyName}}Controller::class, 'findAll'])->name('{{kebabName}}.findAll');
 })->middleware('api');

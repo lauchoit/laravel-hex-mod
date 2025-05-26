@@ -6,13 +6,40 @@ use Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Entity\{{StudlyName}};
 
 abstract class {{StudlyName}}Repository
 {
+    /**
+     * Creates a new {{StudlyName}} entity.
+     * @param array ${{camelName}}
+     * @return {{StudlyName}}
+     */
     abstract public function create(array ${{camelName}}): {{StudlyName}};
 
-    abstract public function update(array ${{camelName}}): {{StudlyName}};
+    /**
+     * Finds all {{StudlyName}} entities.
+     * @return {{StudlyName}}[]
+     */
+    abstract public function findAll(): array;
 
+    /**
+     * Deletes a {{StudlyName}} by its ID.
+     *
+     * @param int $id
+     * @return bool
+     */
     abstract public function deleteById(int $id): bool;
 
+    /**
+     * Finds a {{StudlyName}} by its ID.
+     *
+     * @param int $id
+     * @return {{StudlyName}}|null
+     */
     abstract public function findById(int $id): ?{{StudlyName}};
 
-    abstract public function findAll(): array;
+    /**
+     * Updates a {{StudlyName}} entity.
+     *
+     * @param array ${{camelName}}
+     * @return {{StudlyName}}
+     */
+    abstract public function update(array ${{camelName}}): {{StudlyName}};
 }

@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use Lauchoit\LaravelHexMod\Shared\Responses\ApiResponse;
 use Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Entity\{{StudlyName}};
 use Lauchoit\LaravelHexMod\{{StudlyName}}\Application\UseCases\Create{{StudlyName}}UseCase;
+use Lauchoit\LaravelHexMod\{{StudlyName}}\Application\UseCases\FindAll{{StudlyName}}UseCase;
 use Lauchoit\LaravelHexMod\{{StudlyName}}\Infrastructure\Requests\Create{{StudlyName}}Request;
 use Lauchoit\LaravelHexMod\{{StudlyName}}\Infrastructure\Resources\{{StudlyName}}Resource;
 
@@ -16,12 +17,19 @@ class {{StudlyName}}Controller extends Controller
 {
     public function __construct(
         private readonly Create{{StudlyName}}UseCase $create{{StudlyName}}UseCase,
+        private readonly FindAll{{StudlyName}}UseCase $findAll{{StudlyName}}UseCase,
     ) { }
 
     public function create(Create{{StudlyName}}Request ${{camelName}}): JsonResponse
     {
       $new{{StudlyName}} = $this->create{{StudlyName}}UseCase->execute(${{camelName}}->validated());
       return ApiResponse::success(ApiResponse::$SUCCESS_CREATED, {{StudlyName}}Resource::make($new{{StudlyName}}));
+    }
+
+    public function findAll(): JsonResponse
+    {
+        ${{camelName}}s = $this->findAll{{StudlyName}}UseCase->execute();
+        return ApiResponse::success(ApiResponse::$SUCCESS_SEARCH, {{StudlyName}}Resource::collection(${{camelName}}s));
     }
 
     public function update(Request ${{camelName}}): {{StudlyName}}
@@ -39,8 +47,4 @@ class {{StudlyName}}Controller extends Controller
       throw new \Exception('update Not implemented');
     }
 
-    public function findAll(): array
-    {
-      throw new \Exception('update Not implemented');
-    }
 }

@@ -11,7 +11,7 @@ trait ValidationResponse
      *
      * @var string
      */
-    private string $messageLogin = 'validation.failed.';
+    private string $MESSAGE_VALIDATION = 'validation.failed.';
 
     /**
      * Handle a failed validation attempt.
@@ -27,7 +27,7 @@ trait ValidationResponse
         throw (new $exception($validator,
             response()->json([
                 'ok' => false,
-                'message' => $this->messageLogin,
+                'message' => $this->MESSAGE_VALIDATION,
                 'data' => $validator->errors(),
             ], 422)
         ));
