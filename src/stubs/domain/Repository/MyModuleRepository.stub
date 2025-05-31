@@ -20,20 +20,20 @@ abstract class {{StudlyName}}Repository
     abstract public function findAll(): array;
 
     /**
+     * Finds a {{StudlyName}} by its ID.
+     *
+     * @param int $id
+     * @return {{StudlyName}}|null
+     */
+    abstract public function findById(int ${{camelName}}Id): ?{{StudlyName}};
+    /**
+
      * Deletes a {{StudlyName}} by its ID.
      *
      * @param int $id
      * @return bool
      */
     abstract public function deleteById(int $id): bool;
-
-    /**
-     * Finds a {{StudlyName}} by its ID.
-     *
-     * @param int $id
-     * @return {{StudlyName}}|null
-     */
-    abstract public function findById(int $id): ?{{StudlyName}};
 
     /**
      * Updates a {{StudlyName}} entity.

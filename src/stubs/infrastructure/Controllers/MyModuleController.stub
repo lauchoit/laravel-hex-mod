@@ -9,6 +9,7 @@ use Lauchoit\LaravelHexMod\Shared\Responses\ApiResponse;
 use Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Entity\{{StudlyName}};
 use Lauchoit\LaravelHexMod\{{StudlyName}}\Application\UseCases\Create{{StudlyName}}UseCase;
 use Lauchoit\LaravelHexMod\{{StudlyName}}\Application\UseCases\FindAll{{StudlyName}}UseCase;
+use Lauchoit\LaravelHexMod\{{StudlyName}}\Application\UseCases\FindById{{StudlyName}}UseCase;
 use Lauchoit\LaravelHexMod\{{StudlyName}}\Infrastructure\Requests\Create{{StudlyName}}Request;
 use Lauchoit\LaravelHexMod\{{StudlyName}}\Infrastructure\Resources\{{StudlyName}}Resource;
 
@@ -18,6 +19,7 @@ class {{StudlyName}}Controller extends Controller
     public function __construct(
         private readonly Create{{StudlyName}}UseCase $create{{StudlyName}}UseCase,
         private readonly FindAll{{StudlyName}}UseCase $findAll{{StudlyName}}UseCase,
+        private readonly FindById{{StudlyName}}UseCase $findById{{StudlyName}}UseCase,
     ) { }
 
     public function create(Create{{StudlyName}}Request ${{camelName}}): JsonResponse
@@ -32,6 +34,15 @@ class {{StudlyName}}Controller extends Controller
         return ApiResponse::success(ApiResponse::$SUCCESS_SEARCH, {{StudlyName}}Resource::collection(${{camelName}}s));
     }
 
+    public function findById(int $id): JsonResponse
+    {
+        ${{camelName}} = $this->findById{{StudlyName}}UseCase->execute($id);
+        if (!${{camelName}}) {
+            return ApiResponse::error(ApiResponse::$ERROR_NOT_FOUND, code: 404);
+        }
+        return ApiResponse::success(ApiResponse::$SUCCESS_SEARCH, {{StudlyName}}Resource::make(${{camelName}}));
+    }
+
     public function update(Request ${{camelName}}): {{StudlyName}}
     {
       throw new \Exception('update Not implemented');
@@ -41,10 +52,4 @@ class {{StudlyName}}Controller extends Controller
     {
       throw new \Exception('update Not implemented');
     }
-
-    public function findById(int $id): ?{{StudlyName}}
-    {
-      throw new \Exception('update Not implemented');
-    }
-
 }

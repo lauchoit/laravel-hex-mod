@@ -6,6 +6,7 @@ use Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Entity\{{StudlyName}};
 use Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Repository\{{StudlyName}}Repository;
 use Lauchoit\LaravelHexMod\{{StudlyName}}\Infrastructure\Repository\UseCases\Create{{StudlyName}}UseCaseImpl;
 use Lauchoit\LaravelHexMod\{{StudlyName}}\Infrastructure\Repository\UseCases\FindAll{{StudlyName}}UseCaseImpl;
+use Lauchoit\LaravelHexMod\{{StudlyName}}\Infrastructure\Repository\UseCases\FindById{{StudlyName}}UseCaseImpl;
 
 class {{StudlyName}}RepositoryImpl extends {{StudlyName}}Repository
 {
@@ -13,6 +14,7 @@ class {{StudlyName}}RepositoryImpl extends {{StudlyName}}Repository
     public function __construct(
         private readonly Create{{StudlyName}}UseCaseImpl $create,
         private readonly FindAll{{StudlyName}}UseCaseImpl $findAll,
+        private readonly FindById{{StudlyName}}UseCaseImpl $findById,
         ) { }
 
     /**
@@ -31,9 +33,15 @@ class {{StudlyName}}RepositoryImpl extends {{StudlyName}}Repository
         return $this->findAll->execute();
     }
 
-    public function findById(int $id): ?{{StudlyName}}
+    /**
+     * Finds a {{StudlyName}} by its ID.
+     *
+     * @param int $id
+     * @return {{StudlyName}}|null
+     */
+    public function findById(int ${{camelName}}Id): ?{{StudlyName}}
     {
-        throw new \Exception('update Not implemented');
+        return $this->findById->execute(${{camelName}}Id);
     }
 
     /**
