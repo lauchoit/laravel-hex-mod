@@ -18,7 +18,8 @@ class {{StudlyName}}RepositoryImpl extends {{StudlyName}}Repository
         ) { }
 
     /**
-     * @param array ${{camelName}}
+     * Create a new {{StudlyName}} entity.
+     * @param array $new{{StudlyName}}
      * @return {{StudlyName}}
      */
     public function create(array ${{camelName}}): {{StudlyName}}
@@ -27,6 +28,7 @@ class {{StudlyName}}RepositoryImpl extends {{StudlyName}}Repository
     }
 
     /**
+     * Finds all {{StudlyName}} entities.
      * @return {{StudlyName}}[]
      */
     public function findAll(): array
@@ -36,7 +38,6 @@ class {{StudlyName}}RepositoryImpl extends {{StudlyName}}Repository
 
     /**
      * Finds a {{StudlyName}} by its ID.
-     *
      * @param int ${{camelName}}Id
      * @return {{StudlyName}}|null
      */

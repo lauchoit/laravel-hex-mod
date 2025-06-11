@@ -3,23 +3,24 @@
 namespace Lauchoit\LaravelHexMod\generate;
 
 use Illuminate\Support\Str;
+
 class GenerateResource
 {
-
     /**
      * @param array $fields
      * @param array|bool|string $content
-     * @return array|bool|string|string[]
+     * @param string $kebabName
+     * @return string
      */
-    public static function run(array $fields, array|bool|string $content): string
+    public static function run(array $fields, array|bool|string $content, string $kebabName): string
     {
-        $resourceFields = collect($fields)->map(function ($field) {
+        $resourceFields = collect($fields)->map(function ($field) use ($kebabName) {
             $name = explode(':', $field)[0];
             $method = 'get' . Str::studly($name);
-            return "            '{$name}' => \$this->{$method}(),";
-        })->prepend("'id' => \$this->getId(),")
-            ->add("            'createdAt' => \$this->getCreatedAt(),")
-            ->add("            'updatedAt' => \$this->getUpdatedAt(),")
+            return "            '{$name}' => \${$kebabName}->{$method}(),";
+        })->prepend("'id' => \${$kebabName}->getId(),")
+            ->add("            'createdAt' => \${$kebabName}->getCreatedAt(),")
+            ->add("            'updatedAt' => \${$kebabName}->getUpdatedAt(),")
             ->implode("\n");
 
         $content = str_replace('{{resourceFields}}', $resourceFields, $content);

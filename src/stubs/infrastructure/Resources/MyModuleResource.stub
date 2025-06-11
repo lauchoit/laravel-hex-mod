@@ -3,15 +3,22 @@
 namespace Lauchoit\LaravelHexMod\{{StudlyName}}\Infrastructure\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Request;
+use Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Entity\{{StudlyName}};
 
+/**
+ * @property {{StudlyName}} $resource
+ */
 class {{StudlyName}}Resource extends JsonResource
 {
     /**
-     * @param mixed ${{camelName}}
+     * Transform the resource {{StudlyName}} into an array.
+     * @param Request $request
      * @return array
      */
-    public function toArray(mixed ${{camelName}}): array
+    public function toArray(Request $request): array
     {
+        ${{kebabName}} = $this->resource;
         $data = [
             {{resourceFields}}
         ];

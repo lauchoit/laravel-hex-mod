@@ -12,6 +12,7 @@ readonly class Create{{StudlyName}}UseCase
     ) { }
 
     /**
+     * Create a new {{StudlyName}} entity.
      * @param array $new{{StudlyName}}
      * @return {{StudlyName}}
      */

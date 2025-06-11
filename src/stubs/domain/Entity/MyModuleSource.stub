@@ -4,6 +4,6 @@ namespace Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Entity;
 
 class {{StudlyName}}Source
 {
-    public const FIELDS = [{{fieldsParams}}];
+    public const array FIELDS = [{{fieldsParams}}];
 
 }
