@@ -34,8 +34,16 @@ class {{StudlyName}}Mapper
         })->toArray();
     }
 
-    public static function toPersistence()
+    /**
+     * Maps raw data to the {{StudlyName}}Model for persistence.
+     *
+     * @param array $data
+     * @return {{StudlyName}}Model
+     */
+    public static function toPersistence(array $data): {{StudlyName}}Model
     {
-        // lógica para crear {{StudlyName}}Persistence
+        return {{StudlyName}}Model::make([
+    {{persistenceFields}}
+        ]);
     }
 }

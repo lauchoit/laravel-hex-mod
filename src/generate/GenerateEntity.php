@@ -12,6 +12,8 @@ class GenerateEntity
      */
     public static function run(array $fields, array|bool|string $content): string
     {
+        $timestampFields = ['createdAt:datetime', 'updatedAt:datetime'];
+        $fields = array_merge($fields, $timestampFields);
         $properties = collect($fields)->map(function ($field) {
             [$name, $type] = explode(':', $field);
             return "    private ".self::mapPhpType($type)." \${$name};";

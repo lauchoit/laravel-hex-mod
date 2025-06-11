@@ -22,34 +22,45 @@ class {{StudlyName}}Controller extends Controller
         private readonly FindById{{StudlyName}}UseCase $findById{{StudlyName}}UseCase,
     ) { }
 
+    /**
+     * @param Create{{StudlyName}}Request ${{camelName}}
+     * @return JsonResponse
+     */
     public function create(Create{{StudlyName}}Request ${{camelName}}): JsonResponse
     {
-      $new{{StudlyName}} = $this->create{{StudlyName}}UseCase->execute(${{camelName}}->validated());
-      return ApiResponse::success(ApiResponse::$SUCCESS_CREATED, {{StudlyName}}Resource::make($new{{StudlyName}}));
+        $new{{StudlyName}} = $this->create{{StudlyName}}UseCase->execute(${{camelName}}->validated());
+        return ApiResponse::success(message: ApiResponse::$SUCCESS_CREATED, data: {{StudlyName}}Resource::make($new{{StudlyName}}), code: 201);
     }
 
+    /**
+     * @return JsonResponse
+     */
     public function findAll(): JsonResponse
     {
         ${{camelName}}s = $this->findAll{{StudlyName}}UseCase->execute();
-        return ApiResponse::success(ApiResponse::$SUCCESS_SEARCH, {{StudlyName}}Resource::collection(${{camelName}}s));
+        return ApiResponse::success(message: ApiResponse::$SUCCESS_SEARCH, data: {{StudlyName}}Resource::collection(${{camelName}}s));
     }
 
-    public function findById(int $id): JsonResponse
+    /**
+     * @param int ${{camelName}}Id
+     * @return JsonResponse
+     */
+    public function findById(int ${{camelName}}Id): JsonResponse
     {
-        ${{camelName}} = $this->findById{{StudlyName}}UseCase->execute($id);
+        ${{camelName}} = $this->findById{{StudlyName}}UseCase->execute(${{camelName}}Id);
         if (!${{camelName}}) {
-            return ApiResponse::error(ApiResponse::$ERROR_NOT_FOUND, code: 404);
+            return ApiResponse::error(message: ApiResponse::$ERROR_NOT_FOUND, code: 404);
         }
-        return ApiResponse::success(ApiResponse::$SUCCESS_SEARCH, {{StudlyName}}Resource::make(${{camelName}}));
+        return ApiResponse::success(message: ApiResponse::$SUCCESS_SEARCH, data: {{StudlyName}}Resource::make(${{camelName}}));
     }
 
     public function update(Request ${{camelName}}): {{StudlyName}}
     {
-      throw new \Exception('update Not implemented');
+        throw new \Exception('update Not implemented');
     }
 
     public function deleteById(int $id): bool
     {
-      throw new \Exception('update Not implemented');
+        throw new \Exception('update Not implemented');
     }
 }

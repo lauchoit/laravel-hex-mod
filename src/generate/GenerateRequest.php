@@ -13,7 +13,28 @@ class GenerateRequest
     {
         $rules = collect($fields)->map(function ($field) {
             $name = explode(':', $field)[0];
-            return "            '{$name}' => 'required',";
+            $rules = 'required';
+            $type = explode(':', $field)[1] ?? 'string';
+            if ($type === 'string') {
+                $rules .= '|string|max:255';
+            } elseif ($type === 'integer') {
+                $rules .= '|integer';
+            } elseif ($type === 'float') {
+                $rules .= '|numeric';
+            } elseif ($type === 'date') {
+                $rules .= '|date';
+            } elseif ($type === 'datetime') {
+                $rules .= '|date_format:Y-m-d H:i:s';
+            } elseif ($type === 'json') {
+                $rules .= '|json';
+            } elseif ($type === 'boolean') {
+                $rules .= '|boolean';
+            } elseif ($type === 'text') {
+                $rules .= '|string';
+            } elseif ($type === 'longText') {
+                $rules .= '|string';
+            }
+            return "            '{$name}' => '{$rules}',";
         })->implode("\n");
 
         $rulesWrapped = "return [\n" . $rules . "\n        ];";

@@ -8,6 +8,10 @@ use Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Mappers\{{StudlyName}}Mapper;
 
 class FindById{{StudlyName}}UseCaseImpl
 {
+    /**
+     * @param ${{camelName}}Id
+     * @return {{StudlyName}}|null
+     */
     public function execute(${{camelName}}Id): ?{{StudlyName}}
     {
         ${{camelName}}Model = {{StudlyName}}Model::find(${{camelName}}Id);

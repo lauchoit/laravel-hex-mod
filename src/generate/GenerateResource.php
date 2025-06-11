@@ -18,6 +18,8 @@ class GenerateResource
             $method = 'get' . Str::studly($name);
             return "            '{$name}' => \$this->{$method}(),";
         })->prepend("'id' => \$this->getId(),")
+            ->add("            'createdAt' => \$this->getCreatedAt(),")
+            ->add("            'updatedAt' => \$this->getUpdatedAt(),")
             ->implode("\n");
 
         $content = str_replace('{{resourceFields}}', $resourceFields, $content);

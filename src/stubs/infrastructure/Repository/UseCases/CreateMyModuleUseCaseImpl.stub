@@ -9,12 +9,13 @@ use Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Mappers\{{StudlyName}}Mapper;
 class Create{{StudlyName}}UseCaseImpl
 {
     /**
-     * @param array $dataClient
-     * @return Client
+     * @param array $data{{StudlyName}}
+     * @return {{StudlyName}}
      */
     public function execute(array $data{{StudlyName}}): {{StudlyName}}
     {
-        $new{{StudlyName}} = {{StudlyName}}Model::create($data{{StudlyName}});
-        return {{StudlyName}}Mapper::toDomain($new{{StudlyName}});
+        $dataSource = {{StudlyName}}Mapper::toPersistence($data{{StudlyName}});
+        $dataSource->save();
+        return {{StudlyName}}Mapper::toDomain($dataSource);
     }
 }

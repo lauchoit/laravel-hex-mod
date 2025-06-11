@@ -18,6 +18,7 @@ class {{StudlyName}}RepositoryImpl extends {{StudlyName}}Repository
         ) { }
 
     /**
+     * @param array ${{camelName}}
      * @return {{StudlyName}}
      */
     public function create(array ${{camelName}}): {{StudlyName}}
@@ -36,7 +37,7 @@ class {{StudlyName}}RepositoryImpl extends {{StudlyName}}Repository
     /**
      * Finds a {{StudlyName}} by its ID.
      *
-     * @param int $id
+     * @param int ${{camelName}}Id
      * @return {{StudlyName}}|null
      */
     public function findById(int ${{camelName}}Id): ?{{StudlyName}}

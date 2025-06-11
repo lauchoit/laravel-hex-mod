@@ -44,6 +44,6 @@ class InjectBindingInAppServiceProvider
         }
 
         file_put_contents($providerPath, $file);
-        $command->info("✅ Binding y use agregado para {$studlyName}.");
+        $command->info("✅ [AppServiceProvider] actualizado, Binding y use agregado para {$studlyName}.");
     }
 }

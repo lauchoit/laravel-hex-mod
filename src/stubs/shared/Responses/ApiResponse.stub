@@ -17,6 +17,7 @@ class ApiResponse
      * RESPONSES ERRORS
      */
     public static $ERROR_NOT_FOUND = 'error.not_found';
+    public static $ERROR_VALIDATION_FAILED = 'error.validation.failed';
 
 
     /**

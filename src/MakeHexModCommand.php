@@ -5,6 +5,7 @@ namespace Lauchoit\LaravelHexMod;
 use Illuminate\Console\Command;
 use Lauchoit\LaravelHexMod\generate\GenerateApiResponse;
 use Lauchoit\LaravelHexMod\generate\GenerateEntity;
+use Lauchoit\LaravelHexMod\generate\GenerateEntitySource;
 use Lauchoit\LaravelHexMod\generate\GenerateMapper;
 use Lauchoit\LaravelHexMod\generate\GenerateRequest;
 use Lauchoit\LaravelHexMod\generate\GenerateResource;
@@ -83,6 +84,7 @@ class MakeHexModCommand extends Command
             "Application/UseCases/FindByIdMyModuleUseCase.stub",
             "Application/UseCases/UpdateByIdMyModuleUseCase.stub",
             "Domain/Entity/MyModule.stub",
+            "Domain/Entity/MyModuleSource.stub",
             "Domain/Mappers/MyModuleMapper.stub",
             "Domain/Repository/MyModuleRepository.stub",
             "Infrastructure/Controllers/MyModuleController.stub",
@@ -135,8 +137,12 @@ class MakeHexModCommand extends Command
                 $content = GenerateMapper::run($fields, $camelName, $content);
             }
 
-            if (str_contains($relativePath, 'Entity')) {
+            if (str_contains($relativePath, "Entity/{$studlyName}.stub")) {
                 $content = GenerateEntity::run($fields, $content);
+            }
+
+            if (str_contains($relativePath, "Entity/{$studlyName}Source.stub")) {
+                $content = GenerateEntitySource::run($fields, $content);
             }
 
             if (str_contains($relativePath, 'Resources')) {

@@ -7,19 +7,11 @@ use Illuminate\Contracts\Validation\Validator;
 trait ValidationResponse
 {
     /**
-     * The message to be returned in the response.
-     *
-     * @var string
-     */
-    private string $MESSAGE_VALIDATION = 'validation.failed.';
-
-    /**
      * Handle a failed validation attempt.
      *
      * @param  \Illuminate\Contracts\Validation\Validator  $validator
      * @return void
      */
-
     protected function failedValidation(Validator $validator): void
     {
         $exception = $validator->getException();
@@ -27,7 +19,7 @@ trait ValidationResponse
         throw (new $exception($validator,
             response()->json([
                 'ok' => false,
-                'message' => $this->MESSAGE_VALIDATION,
+                'message' => ApiResponse::$ERROR_VALIDATION_FAILED,
                 'data' => $validator->errors(),
             ], 422)
         ));
