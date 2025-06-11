@@ -46,11 +46,18 @@ class GenerateEntity
 
             return <<<EOT
 
+    /**
+     * @return {$phpType}
+     */
     public function get{$ucName}(): {$phpType}
     {
         return \$this->{$name};
     }
 
+    /**
+     * @param {$phpType} \${$name}
+     * @return void
+     */
     public function set{$ucName}({$phpType} \${$name}): void
     {
         \$this->{$name} = \${$name};
