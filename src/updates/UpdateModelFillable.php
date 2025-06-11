@@ -17,6 +17,7 @@ class UpdateModelFillable
             $command->error("❌ No se encontró el modelo {$studlyName}.");
             return;
         }
+
         // Tipos válidos que queremos casteables
         $castTypes = ['date', 'datetime', 'boolean', 'hashed'];
         $dynamicCasts = collect($fields)
@@ -34,8 +35,6 @@ class UpdateModelFillable
 
         // Merge fijo + dinámico
         $castsArray = $fixedCasts->merge($dynamicCasts)->implode("\n");
-
-
 
         $fieldSource = "{$studlyName}Source::FIELDS";
 
@@ -97,6 +96,7 @@ EOT;
 
         $file = file_get_contents($modelPath);
 
+        // Agregar línea de importación del Source
         $useSourceLine = "use Lauchoit\\LaravelHexMod\\{$studlyName}\\Domain\\Entity\\{$studlyName}Source;";
         if (!str_contains($file, "{$studlyName}Source")) {
             $file = preg_replace_callback(
@@ -108,6 +108,7 @@ EOT;
             );
         }
 
+        // Insertar bloques después de "use HasFactory;"
         $file = preg_replace_callback(
             '/(use\s+HasFactory[^;]*;\s*)/',
             function ($matches) use ($primaryKeyBlock, $fillableBlock, $postFillableBlock) {
@@ -119,11 +120,49 @@ EOT;
             $file
         );
 
+        // Insertar o reemplazar el docblock con @property
+        $phpDocBlock = self::generatePhpDocBlock($studlyName, $fields);
+        $file = preg_replace_callback(
+            '/(\/\*\*.*?\*\/\s+)?(class\s+' . $studlyName . '\s+extends\s+Model)/s',
+            function ($matches) use ($phpDocBlock) {
+                return "{$phpDocBlock}\n" . $matches[2];
+            },
+            $file
+        );
+
         file_put_contents($modelPath, $file);
-        $command->info("✅ Modelo {$studlyName} actualizado con fillable, primary key, hidden y casts (incluyendo created_at y updated_at).");
+        $command->info("✅ Modelo {$studlyName} actualizado con fillable, primary key, hidden, casts y propiedades PHPDoc.");
     }
 
+    private static function generatePhpDocBlock(string $studlyName, array $fields): string
+    {
+        $baseDoc = [
+            "/**",
+            " * @property int \$id",
+        ];
 
+        foreach ($fields as $field) {
+            [$name, $type] = array_pad(explode(':', $field), 2, 'string');
 
+            $mappedType = match ($type) {
+                'integer' => 'int',
+                'float' => 'float',
+                'boolean' => 'bool',
+                'date' => 'string',
+                'datetime' => 'string',
+                'json' => 'string',
+                'text' => 'string',
+                'longText' => 'string',
+                default => 'string',
+            };
 
+            $baseDoc[] = " * @property {$mappedType} \${$name}";
+        }
+
+        $baseDoc[] = " * @property string \$created_at";
+        $baseDoc[] = " * @property string \$updated_at";
+        $baseDoc[] = " */";
+
+        return implode("\n", $baseDoc);
+    }
 }
