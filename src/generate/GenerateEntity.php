@@ -3,32 +3,42 @@
 namespace Lauchoit\LaravelHexMod\generate;
 
 use Illuminate\Support\Str;
+
 class GenerateEntity
 {
     /**
      * @param array $fields
      * @param array|bool|string $content
-     * @return array|bool|string|string[]
+     * @return string
      */
     public static function run(array $fields, array|bool|string $content): string
     {
-        $timestampFields = ['createdAt:datetime', 'updatedAt:datetime'];
+        $timestampFields = ['createdAt:string', 'updatedAt:string'];
         $fields = array_merge($fields, $timestampFields);
-        $properties = collect($fields)->map(function ($field) {
-            [$name, $type] = explode(':', $field);
-            return "    private ".self::mapPhpType($type)." \${$name};";
-        })->prepend("    private int \$id;")->implode("\n");
 
+        // Properties with docblocks
+        $properties = collect([]);
+        $properties->push(self::generateDocProperty('id', 'int'));
+        foreach ($fields as $field) {
+            [$name, $type] = explode(':', $field);
+            $phpType = self::mapPhpType($type);
+            $properties->push(self::generateDocProperty($name, $phpType));
+        }
+        $propertiesBlock = $properties->implode("\n\n");
+
+        // Constructor parameters
         $constructorParams = collect($fields)->map(function ($field) {
             [$name, $type] = explode(':', $field);
             return self::mapPhpType($type) . " \${$name}";
         })->prepend("int \$id")->implode(', ');
 
+        // Constructor body
         $constructorBody = collect($fields)->map(function ($field) {
             $name = explode(':', $field)[0];
             return "        \$this->{$name} = \${$name};";
         })->prepend("        \$this->id = \$id;")->implode("\n");
 
+        // Getters & Setters
         $gettersSetters = collect($fields)->map(function ($field) {
             [$name, $type] = explode(':', $field);
             $ucName = Str::studly($name);
@@ -36,43 +46,52 @@ class GenerateEntity
 
             return <<<EOT
 
-                        public function get{$ucName}(): {$phpType}
-                        {
-                            return \$this->{$name};
-                        }
-                    
-                        public function set{$ucName}({$phpType} \${$name}): void
-                        {
-                            \$this->{$name} = \${$name};
-                        }
-                    EOT;
+    public function get{$ucName}(): {$phpType}
+    {
+        return \$this->{$name};
+    }
+
+    public function set{$ucName}({$phpType} \${$name}): void
+    {
+        \$this->{$name} = \${$name};
+    }
+EOT;
         })->prepend(<<<EOT
-                    
-                        public function getId(): int
-                        {
-                            return \$this->id;
-                        }
-                    EOT
+
+    public function getId(): int
+    {
+        return \$this->id;
+    }
+EOT
         )->implode("\n");
 
         $content = str_replace(
             ['{{properties}}', '{{constructorParams}}', '{{constructorBody}}', '{{gettersSetters}}'],
-            [$properties, $constructorParams, $constructorBody, $gettersSetters],
+            [$propertiesBlock, $constructorParams, $constructorBody, $gettersSetters],
             $content
         );
-        return $content;
 
+        return $content;
     }
 
     private static function mapPhpType(string $type): string
     {
         return match ($type) {
-            'string', 'text', 'longText', 'json' => 'string',
+            'string', 'text', 'longText', 'json', 'date', 'datetime' => 'string',
             'integer' => 'int',
             'float' => 'float',
-            'date', 'datetime' => '\Carbon\Carbon',
             'boolean' => 'bool',
             default => 'mixed',
         };
+    }
+
+    private static function generateDocProperty(string $name, string $phpType): string
+    {
+        return <<<EOL
+    /**
+     * @var {$phpType}
+     */
+    private {$phpType} \${$name};
+EOL;
     }
 }
