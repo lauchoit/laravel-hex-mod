@@ -15,14 +15,10 @@ readonly class FindById{{StudlyName}}UseCase
     /**
      * Find by ID {{StudlyName}} entities.
      * @param ${{camelName}}Id
-     * @return {{StudlyName}}
+     * @return {{StudlyName}}|null
      */
-    public function execute(${{camelName}}Id): {{StudlyName}}
+    public function execute(${{camelName}}Id): ?{{StudlyName}}
     {
-        ${{camelName}} = $this->{{camelName}}Repository->findById(${{camelName}}Id);
-        if (!${{camelName}}) {
-            throw new {{StudlyName}}NotFoundException(${{camelName}}Id);
-        }
-        return ${{camelName}};
+        return $this->{{camelName}}Repository->findById(${{camelName}}Id);
     }
 }

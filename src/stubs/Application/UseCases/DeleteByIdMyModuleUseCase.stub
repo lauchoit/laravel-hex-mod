@@ -3,6 +3,7 @@
 namespace Lauchoit\LaravelHexMod\{{StudlyName}}\Application\UseCases;
 
 use Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Repository\{{StudlyName}}Repository;
+use Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Exceptions\{{StudlyName}}NotFoundException;
 
 readonly class DeleteById{{StudlyName}}UseCase
 {
@@ -18,6 +19,9 @@ readonly class DeleteById{{StudlyName}}UseCase
     public function execute(int ${{camelName}}Id): bool
     {
         ${{camelName}} = $this->findById{{StudlyName}}UseCase->execute(${{camelName}}Id);
+        if (!${{camelName}}) {
+            throw new {{StudlyName}}NotFoundException($clientId);
+        }
         return $this->{{camelName}}Repository->deleteById(${{camelName}});
     }
 }

@@ -50,12 +50,11 @@ class {{StudlyName}}Controller extends Controller
      */
     public function findById(int ${{camelName}}Id): JsonResponse
     {
-        try {
-            ${{camelName}} = $this->findById{{StudlyName}}UseCase->execute(${{camelName}}Id);
-            return ApiResponse::success(message: ApiResponse::$SUCCESS_SEARCH, data: {{StudlyName}}Resource::make(${{camelName}}));
-        } catch ({{StudlyName}}NotFoundException $e) {
-            return ApiResponse::error(message: $e->getMessage(), code: 404);
+        ${{camelName}} = $this->findById{{StudlyName}}UseCase->execute(${{camelName}}Id);
+        if (!${{camelName}}) {
+            return ApiResponse::error(message: ApiResponse::$ERROR_NOT_FOUND, code: 404);
         }
+        return ApiResponse::success(message: ApiResponse::$SUCCESS_SEARCH, data: {{StudlyName}}Resource::make(${{camelName}}));
     }
 
     /**
