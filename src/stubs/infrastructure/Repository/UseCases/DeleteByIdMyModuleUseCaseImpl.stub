@@ -2,10 +2,19 @@
 
 namespace Lauchoit\LaravelHexMod\{{StudlyName}}\Infrastructure\Repository\UseCases;
 
+use App\Models\{{StudlyName}} as {{StudlyName}}Model;
+use Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Entity\{{StudlyName}};
+
 class DeleteById{{StudlyName}}UseCaseImpl
 {
-    public function execute()
+    /**
+     * Deletes a {{StudlyName}} by its ID.
+     *
+     * @param {{StudlyName}} ${{camelName}}
+     * @return bool
+     */
+    public function execute({{StudlyName}} ${{camelName}}): bool
     {
-        // lógica para crear {{StudlyName}}
+        return {{StudlyName}}Model::find(${{camelName}}->getId())->delete();
     }
 }

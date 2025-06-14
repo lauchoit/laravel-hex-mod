@@ -78,15 +78,16 @@ class MakeHexModCommand extends Command
         $this->info("Generando módulo {$studlyName} en: {$basePath}");
 
         $files = collect([
+            "Domain/Entity/MyModule.stub",
+            "Domain/Entity/MyModuleSource.stub",
+            "Domain/Mappers/MyModuleMapper.stub",
+            "Domain/Repository/MyModuleRepository.stub",
+            "Domain/Exceptions/MyModuleNotFoundException.stub",
             "Application/UseCases/CreateMyModuleUseCase.stub",
             "Application/UseCases/DeleteByIdMyModuleUseCase.stub",
             "Application/UseCases/FindAllMyModuleUseCase.stub",
             "Application/UseCases/FindByIdMyModuleUseCase.stub",
             "Application/UseCases/UpdateByIdMyModuleUseCase.stub",
-            "Domain/Entity/MyModule.stub",
-            "Domain/Entity/MyModuleSource.stub",
-            "Domain/Mappers/MyModuleMapper.stub",
-            "Domain/Repository/MyModuleRepository.stub",
             "Infrastructure/Controllers/MyModuleController.stub",
             "Infrastructure/Repository/MyModuleRepositoryImpl.stub",
             "Infrastructure/Repository/UseCases/CreateMyModuleUseCaseImpl.stub",

@@ -5,6 +5,7 @@ namespace Lauchoit\LaravelHexMod\{{StudlyName}}\Infrastructure\Repository\UseCas
 use App\Models\{{StudlyName}} as {{StudlyName}}Model;
 use Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Entity\{{StudlyName}};
 use Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Mappers\{{StudlyName}}Mapper;
+use Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Exceptions\{{StudlyName}}NotFoundException;
 
 class FindById{{StudlyName}}UseCaseImpl
 {
@@ -15,7 +16,7 @@ class FindById{{StudlyName}}UseCaseImpl
     public function execute(${{camelName}}Id): ?{{StudlyName}}
     {
         ${{camelName}}Model = {{StudlyName}}Model::find(${{camelName}}Id);
-        if (${{camelName}}Model === null) {
+        if (!${{camelName}}Model) {
             return null;
         }
         return {{StudlyName}}Mapper::toDomain(${{camelName}}Model);

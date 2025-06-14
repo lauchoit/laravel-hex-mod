@@ -13,6 +13,7 @@ class ApiResponse
      */
     public static $SUCCESS_CREATED = 'success.created';
     public static $SUCCESS_SEARCH = 'success.search';
+    public static $SUCCESS_DELETED = 'success.deleted';
     /**
      * RESPONSES ERRORS
      */

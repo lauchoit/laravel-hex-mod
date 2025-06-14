@@ -5,6 +5,7 @@ namespace Lauchoit\LaravelHexMod\{{StudlyName}}\Infrastructure\Repository;
 use Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Entity\{{StudlyName}};
 use Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Repository\{{StudlyName}}Repository;
 use Lauchoit\LaravelHexMod\{{StudlyName}}\Infrastructure\Repository\UseCases\Create{{StudlyName}}UseCaseImpl;
+use Lauchoit\LaravelHexMod\{{StudlyName}}\Infrastructure\Repository\UseCases\DeleteById{{StudlyName}}UseCaseImpl;
 use Lauchoit\LaravelHexMod\{{StudlyName}}\Infrastructure\Repository\UseCases\FindAll{{StudlyName}}UseCaseImpl;
 use Lauchoit\LaravelHexMod\{{StudlyName}}\Infrastructure\Repository\UseCases\FindById{{StudlyName}}UseCaseImpl;
 
@@ -15,6 +16,7 @@ class {{StudlyName}}RepositoryImpl extends {{StudlyName}}Repository
         private readonly Create{{StudlyName}}UseCaseImpl $create,
         private readonly FindAll{{StudlyName}}UseCaseImpl $findAll,
         private readonly FindById{{StudlyName}}UseCaseImpl $findById,
+        private readonly DeleteById{{StudlyName}}UseCaseImpl $deleteById,
         ) { }
 
     /**
@@ -47,6 +49,17 @@ class {{StudlyName}}RepositoryImpl extends {{StudlyName}}Repository
     }
 
     /**
+     * Deletes a {{StudlyName}} by its ID.
+     *
+     * @param {{StudlyName}} ${{camelName}}
+     * @return bool
+     */
+     public function deleteById({{StudlyName}} ${{camelName}}): bool
+     {
+        return $this->deleteById->execute(${{camelName}});
+     }
+
+    /**
      * @return {{StudlyName}}
      */
     public function update(array ${{camelName}}): {{StudlyName}}
@@ -54,8 +67,5 @@ class {{StudlyName}}RepositoryImpl extends {{StudlyName}}Repository
         throw new \Exception('update Not implemented');
     }
 
-    public function deleteById(int $id): bool
-    {
-        throw new \Exception('update Not implemented');
-    }
+
 }

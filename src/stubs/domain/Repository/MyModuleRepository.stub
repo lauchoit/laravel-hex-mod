@@ -22,18 +22,18 @@ abstract class {{StudlyName}}Repository
     /**
      * Finds a {{StudlyName}} by its ID.
      *
-     * @param int $id
+     * @param int ${{camelName}}Id
      * @return {{StudlyName}}|null
      */
     abstract public function findById(int ${{camelName}}Id): ?{{StudlyName}};
-    /**
 
+    /**
      * Deletes a {{StudlyName}} by its ID.
      *
-     * @param int $id
+     * @param {{StudlyName}} ${{camelName}}
      * @return bool
      */
-    abstract public function deleteById(int $id): bool;
+    abstract public function deleteById({{StudlyName}} ${{camelName}}): bool;
 
     /**
      * Updates a {{StudlyName}} entity.

@@ -7,4 +7,5 @@ Route::prefix('api/{{kebabName}}')->group(function () {
     Route::post('/', [{{StudlyName}}Controller::class, 'create'])->name('{{kebabName}}.create');
     Route::get('/', [{{StudlyName}}Controller::class, 'findAll'])->name('{{kebabName}}.findAll');
     Route::get('/{{{camelName}}Id}', [{{StudlyName}}Controller::class, 'findById'])->name('{{kebabName}}.findById');
+    Route::delete('/{{{camelName}}Id}', [{{StudlyName}}Controller::class, 'deleteById'])->name('{{kebabName}}.deleteById');
 })->middleware('api');

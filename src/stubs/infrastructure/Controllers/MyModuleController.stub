@@ -7,7 +7,9 @@ use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use Lauchoit\LaravelHexMod\Shared\Responses\ApiResponse;
 use Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Entity\{{StudlyName}};
+use Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Exceptions\{{StudlyName}}NotFoundException;
 use Lauchoit\LaravelHexMod\{{StudlyName}}\Application\UseCases\Create{{StudlyName}}UseCase;
+use Lauchoit\LaravelHexMod\{{StudlyName}}\Application\UseCases\DeleteById{{StudlyName}}UseCase;
 use Lauchoit\LaravelHexMod\{{StudlyName}}\Application\UseCases\FindAll{{StudlyName}}UseCase;
 use Lauchoit\LaravelHexMod\{{StudlyName}}\Application\UseCases\FindById{{StudlyName}}UseCase;
 use Lauchoit\LaravelHexMod\{{StudlyName}}\Infrastructure\Requests\Create{{StudlyName}}Request;
@@ -20,6 +22,7 @@ class {{StudlyName}}Controller extends Controller
         private readonly Create{{StudlyName}}UseCase $create{{StudlyName}}UseCase,
         private readonly FindAll{{StudlyName}}UseCase $findAll{{StudlyName}}UseCase,
         private readonly FindById{{StudlyName}}UseCase $findById{{StudlyName}}UseCase,
+        private readonly DeleteById{{StudlyName}}UseCase $deleteById{{StudlyName}}UseCase,
     ) { }
 
     /**
@@ -47,11 +50,26 @@ class {{StudlyName}}Controller extends Controller
      */
     public function findById(int ${{camelName}}Id): JsonResponse
     {
-        ${{camelName}} = $this->findById{{StudlyName}}UseCase->execute(${{camelName}}Id);
-        if (!${{camelName}}) {
-            return ApiResponse::error(message: ApiResponse::$ERROR_NOT_FOUND, code: 404);
+        try {
+            ${{camelName}} = $this->findById{{StudlyName}}UseCase->execute(${{camelName}}Id);
+            return ApiResponse::success(message: ApiResponse::$SUCCESS_SEARCH, data: {{StudlyName}}Resource::make(${{camelName}}));
+        } catch ({{StudlyName}}NotFoundException $e) {
+            return ApiResponse::error(message: $e->getMessage(), code: 404);
         }
-        return ApiResponse::success(message: ApiResponse::$SUCCESS_SEARCH, data: {{StudlyName}}Resource::make(${{camelName}}));
+    }
+
+    /**
+     * @param int ${{camelName}}Id
+     * @return JsonResponse
+     */
+    public function deleteById(int ${{camelName}}Id): JsonResponse
+    {
+        try {
+            $deleted = $this->deleteById{{StudlyName}}UseCase->execute(${{camelName}}Id);
+            return ApiResponse::success(message: ApiResponse::$SUCCESS_DELETED, data: $deleted);
+        } catch ({{StudlyName}}NotFoundException $e) {
+            return ApiResponse::error(message: $e->getMessage(), code: 404);
+        }
     }
 
     public function update(Request ${{camelName}}): {{StudlyName}}
@@ -59,8 +77,4 @@ class {{StudlyName}}Controller extends Controller
         throw new \Exception('update Not implemented');
     }
 
-    public function deleteById(int $id): bool
-    {
-        throw new \Exception('update Not implemented');
-    }
 }

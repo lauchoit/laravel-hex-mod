@@ -1,0 +1,13 @@
+<?php
+
+namespace Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Exceptions;
+
+use RuntimeException;
+
+class {{StudlyName}}NotFoundException extends RuntimeException
+{
+    public function __construct(int|string $id)
+    {
+        parent::__construct("{{StudlyName}} with ID {$id} not found.");
+    }
+}
