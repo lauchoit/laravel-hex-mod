@@ -20,8 +20,8 @@ use Illuminate\Support\Facades\{Artisan, File};
 
 class MakeHexModCommand extends Command
 {
-    protected $signature = 'make:hex-mod {name} {--fields=*}';
-    protected $description = 'Genera la estructura hexagonal base para un módulo';
+    protected $signature = 'make:hex-mod {name} {--f|field=*}';
+    protected $description = 'Create a hexagonal architecture base structure for a module';
 
     public function handle(): void
     {
@@ -52,7 +52,7 @@ class MakeHexModCommand extends Command
             '-f' => true,
         ]);
 
-        $fields = $this->option('fields');
+        $fields = $this->option('field');
         if (empty($fields)) {
             $fields = ['attribute1:string', 'attribute2:string'];
         }
