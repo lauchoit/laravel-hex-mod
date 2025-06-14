@@ -12,7 +12,9 @@ use Lauchoit\LaravelHexMod\{{StudlyName}}\Application\UseCases\Create{{StudlyNam
 use Lauchoit\LaravelHexMod\{{StudlyName}}\Application\UseCases\DeleteById{{StudlyName}}UseCase;
 use Lauchoit\LaravelHexMod\{{StudlyName}}\Application\UseCases\FindAll{{StudlyName}}UseCase;
 use Lauchoit\LaravelHexMod\{{StudlyName}}\Application\UseCases\FindById{{StudlyName}}UseCase;
+use Lauchoit\LaravelHexMod\{{StudlyName}}\Application\UseCases\UpdateById{{StudlyName}}UseCase;
 use Lauchoit\LaravelHexMod\{{StudlyName}}\Infrastructure\Requests\Create{{StudlyName}}Request;
+use Lauchoit\LaravelHexMod\{{StudlyName}}\Infrastructure\Requests\Update{{StudlyName}}Request;
 use Lauchoit\LaravelHexMod\{{StudlyName}}\Infrastructure\Resources\{{StudlyName}}Resource;
 
 
@@ -23,6 +25,7 @@ class {{StudlyName}}Controller extends Controller
         private readonly FindAll{{StudlyName}}UseCase $findAll{{StudlyName}}UseCase,
         private readonly FindById{{StudlyName}}UseCase $findById{{StudlyName}}UseCase,
         private readonly DeleteById{{StudlyName}}UseCase $deleteById{{StudlyName}}UseCase,
+        private readonly UpdateById{{StudlyName}}UseCase $updateById{{StudlyName}}UseCase,
     ) { }
 
     /**
@@ -45,6 +48,8 @@ class {{StudlyName}}Controller extends Controller
     }
 
     /**
+     * Find a {{StudlyName}} entity by its ID.
+     *
      * @param int ${{camelName}}Id
      * @return JsonResponse
      */
@@ -58,6 +63,8 @@ class {{StudlyName}}Controller extends Controller
     }
 
     /**
+     * Delete a {{StudlyName}} entity by its ID.
+     *
      * @param int ${{camelName}}Id
      * @return JsonResponse
      */
@@ -71,10 +78,21 @@ class {{StudlyName}}Controller extends Controller
         }
     }
 
-    public function updateById(Request ${{camelName}}): {{StudlyName}}
+    /**
+     * Update a {{StudlyName}} entity by its ID.
+     *
+     * @param int ${{camelName}}Id
+     * @param Update{{StudlyName}}Request $data
+     * @return JsonResponse
+     */
+    public function updateById(int ${{camelName}}Id, Update{{StudlyName}}Request $data): JsonResponse
     {
-        dd('Dentro del update');
-        throw new \Exception('update Not implemented');
+        try {
+            ${{camelName}}Updated = $this->updateById{{StudlyName}}UseCase->execute(${{camelName}}Id, $data->validated());
+            return ApiResponse::success(message: ApiResponse::$SUCCESS_UPDATED, data: {{StudlyName}}Resource::make(${{camelName}}Updated));
+        } catch ({{StudlyName}}NotFoundException $e) {
+             return ApiResponse::error(message: $e->getMessage(), code: 404);
+         }
     }
 
 }

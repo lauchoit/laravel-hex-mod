@@ -36,10 +36,11 @@ abstract class {{StudlyName}}Repository
     abstract public function deleteById({{StudlyName}} ${{camelName}}): bool;
 
     /**
-     * Updates a {{StudlyName}} entity.
+     * Update a {{StudlyName}} entity by its ID.
      *
-     * @param array ${{camelName}}
+     * @param {{StudlyName}} ${{camelName}}
+     * @param Update{{StudlyName}}Request $data
      * @return {{StudlyName}}
      */
-    abstract public function update(array ${{camelName}}): {{StudlyName}};
+    abstract public function updateById({{StudlyName}} ${{camelName}}, array $data): {{StudlyName}};
 }

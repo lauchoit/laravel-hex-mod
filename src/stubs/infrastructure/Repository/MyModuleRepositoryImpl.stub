@@ -54,15 +54,19 @@ class {{StudlyName}}RepositoryImpl extends {{StudlyName}}Repository
      * @param {{StudlyName}} ${{camelName}}
      * @return bool
      */
-     public function deleteById({{StudlyName}} ${{camelName}}): bool
-     {
+    public function deleteById({{StudlyName}} ${{camelName}}): bool
+    {
         return $this->deleteById->execute(${{camelName}});
-     }
+    }
 
     /**
+     * Update a {{StudlyName}} entity by its ID.
+     *
+     * @param {{StudlyName}} ${{camelName}}
+     * @param array $data
      * @return {{StudlyName}}
      */
-    public function update(array ${{camelName}}): {{StudlyName}}
+    public function updateById({{StudlyName}} ${{camelName}}, array $data): {{StudlyName}}
     {
         throw new \Exception('update Not implemented');
     }
