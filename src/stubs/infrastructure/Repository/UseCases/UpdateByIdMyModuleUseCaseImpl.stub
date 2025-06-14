@@ -2,10 +2,29 @@
 
 namespace Lauchoit\LaravelHexMod\{{StudlyName}}\Infrastructure\Repository\UseCases;
 
+use App\Models\{{StudlyName}} as {{StudlyName}}Model;
+use Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Entity\{{StudlyName}};
+use Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Exceptions\{{StudlyName}}NotFoundException;
+use Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Mappers\{{StudlyName}}Mapper;
+
 class UpdateById{{StudlyName}}UseCaseImpl
 {
+    /**
+     * Update a client by its ID.
+     *
+     * @param int $clientId
+     * @param array $data
+     * @return Client
+     */
     public function execute()
     {
-        // lógica para crear {{StudlyName}}
+        ${{camelName}}Model = {{StudlyName}}Model::find(${{camelName}}Id);
+        if (!${{camelName}}Model) {
+            throw new {{StudlyName}}NotFoundException(${{camelName}}Id);
+        }
+        ${{camelName}}Updated = {{StudlyName}}Mapper::toPersistence($data, ${{camelName}}Model);
+        ${{camelName}}Updated->save();
+
+        return {{StudlyName}}Mapper::toDomain(${{camelName}}Updated);
     }
 }

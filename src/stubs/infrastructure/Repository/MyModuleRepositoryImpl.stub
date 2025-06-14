@@ -8,6 +8,7 @@ use Lauchoit\LaravelHexMod\{{StudlyName}}\Infrastructure\Repository\UseCases\Cre
 use Lauchoit\LaravelHexMod\{{StudlyName}}\Infrastructure\Repository\UseCases\DeleteById{{StudlyName}}UseCaseImpl;
 use Lauchoit\LaravelHexMod\{{StudlyName}}\Infrastructure\Repository\UseCases\FindAll{{StudlyName}}UseCaseImpl;
 use Lauchoit\LaravelHexMod\{{StudlyName}}\Infrastructure\Repository\UseCases\FindById{{StudlyName}}UseCaseImpl;
+use Lauchoit\LaravelHexMod\{{StudlyName}}\Infrastructure\Repository\UseCases\UpdateById{{StudlyName}}UseCaseImpl;
 
 class {{StudlyName}}RepositoryImpl extends {{StudlyName}}Repository
 {
@@ -17,6 +18,7 @@ class {{StudlyName}}RepositoryImpl extends {{StudlyName}}Repository
         private readonly FindAll{{StudlyName}}UseCaseImpl $findAll,
         private readonly FindById{{StudlyName}}UseCaseImpl $findById,
         private readonly DeleteById{{StudlyName}}UseCaseImpl $deleteById,
+        private readonly UpdateById{{StudlyName}}UseCaseImpl $updateById,
         ) { }
 
     /**
@@ -62,13 +64,13 @@ class {{StudlyName}}RepositoryImpl extends {{StudlyName}}Repository
     /**
      * Update a {{StudlyName}} entity by its ID.
      *
-     * @param {{StudlyName}} ${{camelName}}
+     * @param int ${{camelName}}Id
      * @param array $data
      * @return {{StudlyName}}
      */
-    public function updateById({{StudlyName}} ${{camelName}}, array $data): {{StudlyName}}
+    public function updateById(int ${{camelName}}Id, array $data): {{StudlyName}}
     {
-        throw new \Exception('update Not implemented');
+        return $this->updateById->execute(${{camelName}}Id, $data);
     }
 
 

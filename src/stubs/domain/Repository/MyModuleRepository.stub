@@ -38,9 +38,9 @@ abstract class {{StudlyName}}Repository
     /**
      * Update a {{StudlyName}} entity by its ID.
      *
-     * @param {{StudlyName}} ${{camelName}}
-     * @param Update{{StudlyName}}Request $data
+     * @param int ${{camelName}}Id
+     * @param array $data
      * @return {{StudlyName}}
      */
-    abstract public function updateById({{StudlyName}} ${{camelName}}, array $data): {{StudlyName}};
+    abstract public function updateById(int ${{camelName}}Id, array $data): {{StudlyName}};
 }
