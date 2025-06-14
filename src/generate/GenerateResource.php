@@ -9,21 +9,20 @@ class GenerateResource
     /**
      * @param array $fields
      * @param array|bool|string $content
-     * @param string $kebabName
+     * @param string $camelName
      * @return string
      */
-    public static function run(array $fields, array|bool|string $content, string $kebabName): string
+    public static function run(array $fields, array|bool|string $content, string $camelName): string
     {
-        $resourceFields = collect($fields)->map(function ($field) use ($kebabName) {
+        $resourceFields = collect($fields)->map(function ($field) use ($camelName) {
             $name = explode(':', $field)[0];
             $method = 'get' . Str::studly($name);
-            return "            '{$name}' => \${$kebabName}->{$method}(),";
-        })->prepend("'id' => \${$kebabName}->getId(),")
-            ->add("            'createdAt' => \${$kebabName}->getCreatedAt(),")
-            ->add("            'updatedAt' => \${$kebabName}->getUpdatedAt(),")
+            return "            '{$name}' => \${$camelName}->{$method}(),";
+        })->prepend("'id' => \${$camelName}->getId(),")
+            ->add("            'createdAt' => \${$camelName}->getCreatedAt(),")
+            ->add("            'updatedAt' => \${$camelName}->getUpdatedAt(),")
             ->implode("\n");
 
-        $content = str_replace('{{resourceFields}}', $resourceFields, $content);
-        return $content;
+        return str_replace('{{resourceFields}}', $resourceFields, $content);
     }
 }

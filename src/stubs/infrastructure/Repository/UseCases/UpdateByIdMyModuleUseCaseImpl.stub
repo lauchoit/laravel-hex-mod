@@ -10,13 +10,13 @@ use Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Mappers\{{StudlyName}}Mapper;
 class UpdateById{{StudlyName}}UseCaseImpl
 {
     /**
-     * Update a client by its ID.
+     * Update a {{{{StudlyName}}}} by its ID.
      *
-     * @param int $clientId
+     * @param int ${{camelName}}Id
      * @param array $data
-     * @return Client
+     * @return {{StudlyName}}
      */
-    public function execute()
+    public function execute(int ${{camelName}}Id, array $data): {{StudlyName}}
     {
         ${{camelName}}Model = {{StudlyName}}Model::find(${{camelName}}Id);
         if (!${{camelName}}Model) {

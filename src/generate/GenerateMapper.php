@@ -29,13 +29,9 @@ class GenerateMapper
         // toPersistence
         $persistenceFields = collect([]);
 
-        foreach ($fields as $key => $field) {
+        foreach ($fields as $field) {
             $name = explode(':', $field)[0];
-            if ($key === 0) {
-                $persistenceFields->push(self::getIdent(2) . "'{$name}' => \$data['{$name}'] ?? null,");
-            } else {
-                $persistenceFields->push(self::getIdent(3) . "'{$name}' => \$data['{$name}'] ?? null,");
-            }
+            $persistenceFields->push(self::getIdent(2) . "\$model->{$name} = \$data['{$name}'] ?? \$model->{$name};");
         }
 
         $persistenceBlock = $persistenceFields->implode("\n");

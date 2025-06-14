@@ -40,10 +40,12 @@ class {{StudlyName}}Mapper
      * @param array $data
      * @return {{StudlyName}}Model
      */
-    public static function toPersistence(array $data): {{StudlyName}}Model
+    public static function toPersistence(array $data, ?{{StudlyName}}Model ${{camelName}}Model = null): {{StudlyName}}Model
     {
-        return {{StudlyName}}Model::make([
-    {{persistenceFields}}
-        ]);
+        $model = ${{camelName}}Model ?? new {{StudlyName}}Model();
+
+{{persistenceFields}}
+
+        return $model;
     }
 }

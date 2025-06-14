@@ -20,7 +20,7 @@ readonly class DeleteById{{StudlyName}}UseCase
     {
         ${{camelName}} = $this->findById{{StudlyName}}UseCase->execute(${{camelName}}Id);
         if (!${{camelName}}) {
-            throw new {{StudlyName}}NotFoundException($clientId);
+            throw new {{StudlyName}}NotFoundException(${{camelName}}Id);
         }
         return $this->{{camelName}}Repository->deleteById(${{camelName}});
     }
