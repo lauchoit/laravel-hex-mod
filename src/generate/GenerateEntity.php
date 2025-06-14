@@ -21,6 +21,7 @@ class GenerateEntity
         $properties->push(self::generateDocProperty('id', 'int'));
         foreach ($fields as $field) {
             [$name, $type] = explode(':', $field);
+            $name = Str::camel($name);
             $phpType = self::mapPhpType($type);
             $properties->push(self::generateDocProperty($name, $phpType));
         }
@@ -29,18 +30,21 @@ class GenerateEntity
         // Constructor parameters
         $constructorParams = collect($fields)->map(function ($field) {
             [$name, $type] = explode(':', $field);
+            $name = Str::camel($name);
             return self::mapPhpType($type) . " \${$name}";
         })->prepend("int \$id")->implode(', ');
 
         // Constructor body
         $constructorBody = collect($fields)->map(function ($field) {
             $name = explode(':', $field)[0];
+            $name = Str::camel($name);
             return "        \$this->{$name} = \${$name};";
         })->prepend("        \$this->id = \$id;")->implode("\n");
 
         // Getters & Setters
         $gettersSetters = collect($fields)->map(function ($field) {
             [$name, $type] = explode(':', $field);
+            $name = Str::camel($name);
             $ucName = Str::studly($name);
             $phpType = self::mapPhpType($type);
 

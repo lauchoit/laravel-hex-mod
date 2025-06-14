@@ -153,7 +153,7 @@ class MakeHexModCommand extends Command
             }
 
             if (str_contains($relativePath, 'Resources')) {
-                $content = GenerateResource::run($fields, $content, $kebabName);
+                $content = GenerateResource::run($fields, $content, $camelName);
             }
 
 

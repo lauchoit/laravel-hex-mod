@@ -2,6 +2,7 @@
 
 namespace Lauchoit\LaravelHexMod\generate;
 
+use Illuminate\Support\Str;
 class GenerateMapper
 {
     /**
@@ -18,7 +19,8 @@ class GenerateMapper
 
         foreach ($fields as $field) {
             $name = explode(':', $field)[0];
-            $mapperFields->push(self::getIdent(3) . "{$name}: \${$camelName}->{$name},");
+            $camelField = Str::camel($name);
+            $mapperFields->push(self::getIdent(3) . "{$camelField}: \${$camelName}->{$name},");
         }
 
         $mapperFields->push(self::getIdent(3) . "createdAt: \${$camelName}->created_at,");
@@ -31,7 +33,8 @@ class GenerateMapper
 
         foreach ($fields as $field) {
             $name = explode(':', $field)[0];
-            $persistenceFields->push(self::getIdent(2) . "\$model->{$name} = \$data['{$name}'] ?? \$model->{$name};");
+            $camelField = Str::camel($name);
+            $persistenceFields->push(self::getIdent(2) . "\$model->{$name} = \$data['{$camelField}'] ?? \$model->{$name};");
         }
 
         $persistenceBlock = $persistenceFields->implode("\n");

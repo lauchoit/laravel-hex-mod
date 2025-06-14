@@ -2,6 +2,8 @@
 
 namespace Lauchoit\LaravelHexMod\generate;
 
+use Illuminate\Support\Str;
+
 class GenerateUpdateRequest
 {
     /**
@@ -13,6 +15,7 @@ class GenerateUpdateRequest
     {
         $rules = collect($fields)->map(function ($field) {
             $name = explode(':', $field)[0];
+            $name = Str::camel($name);
             $rules = '';
             $type = explode(':', $field)[1] ?? 'string';
             if ($type === 'string') {

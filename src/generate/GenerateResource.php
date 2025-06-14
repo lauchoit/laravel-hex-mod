@@ -16,6 +16,7 @@ class GenerateResource
     {
         $resourceFields = collect($fields)->map(function ($field) use ($camelName) {
             $name = explode(':', $field)[0];
+            $name = Str::camel($name);
             $method = 'get' . Str::studly($name);
             return "            '{$name}' => \${$camelName}->{$method}(),";
         })->prepend("'id' => \${$camelName}->getId(),")
