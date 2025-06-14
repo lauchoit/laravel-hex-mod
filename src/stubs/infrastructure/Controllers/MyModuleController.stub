@@ -71,8 +71,9 @@ class {{StudlyName}}Controller extends Controller
         }
     }
 
-    public function update(Request ${{camelName}}): {{StudlyName}}
+    public function updateById(Request ${{camelName}}): {{StudlyName}}
     {
+        dd('Dentro del update');
         throw new \Exception('update Not implemented');
     }
 

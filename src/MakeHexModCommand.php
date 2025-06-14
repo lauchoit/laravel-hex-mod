@@ -7,8 +7,9 @@ use Lauchoit\LaravelHexMod\generate\GenerateApiResponse;
 use Lauchoit\LaravelHexMod\generate\GenerateEntity;
 use Lauchoit\LaravelHexMod\generate\GenerateEntitySource;
 use Lauchoit\LaravelHexMod\generate\GenerateMapper;
-use Lauchoit\LaravelHexMod\generate\GenerateRequest;
+use Lauchoit\LaravelHexMod\generate\GenerateCreateRequest;
 use Lauchoit\LaravelHexMod\generate\GenerateResource;
+use Lauchoit\LaravelHexMod\generate\GenerateUpdateRequest;
 use Lauchoit\LaravelHexMod\generate\GenerateValidationResponse;
 use Lauchoit\LaravelHexMod\inject\InjectBindingInAppServiceProvider;
 use Lauchoit\LaravelHexMod\inject\InjectModulesRoutes;
@@ -88,6 +89,8 @@ class MakeHexModCommand extends Command
             "Application/UseCases/FindAllMyModuleUseCase.stub",
             "Application/UseCases/FindByIdMyModuleUseCase.stub",
             "Application/UseCases/UpdateByIdMyModuleUseCase.stub",
+            "Infrastructure/Requests/CreateMyModuleRequest.stub",
+            "Infrastructure/Requests/UpdateMyModuleRequest.stub",
             "Infrastructure/Controllers/MyModuleController.stub",
             "Infrastructure/Repository/MyModuleRepositoryImpl.stub",
             "Infrastructure/Repository/UseCases/CreateMyModuleUseCaseImpl.stub",
@@ -95,7 +98,6 @@ class MakeHexModCommand extends Command
             "Infrastructure/Repository/UseCases/FindAllMyModuleUseCaseImpl.stub",
             "Infrastructure/Repository/UseCases/FindByIdMyModuleUseCaseImpl.stub",
             "Infrastructure/Repository/UseCases/UpdateByIdMyModuleUseCaseImpl.stub",
-            "Infrastructure/Requests/CreateMyModuleRequest.stub",
             "Infrastructure/Resources/MyModuleResource.stub",
             "Infrastructure/Routes/MyModuleRoutes.stub",
         ]);
@@ -131,7 +133,11 @@ class MakeHexModCommand extends Command
             );
 
             if (str_contains($relativePath, 'Requests/Create')) {
-                $content = GenerateRequest::run($fields, $content);
+                $content = GenerateCreateRequest::run($fields, $content);
+            }
+
+            if (str_contains($relativePath, 'Requests/Update')) {
+                $content = GenerateUpdateRequest::run($fields, $content);
             }
 
             if (str_contains($relativePath, 'Mappers')) {

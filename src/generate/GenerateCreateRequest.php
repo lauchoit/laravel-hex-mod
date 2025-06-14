@@ -2,7 +2,7 @@
 
 namespace Lauchoit\LaravelHexMod\generate;
 
-class GenerateRequest
+class GenerateCreateRequest
 {
     /**
      * @param array $fields
