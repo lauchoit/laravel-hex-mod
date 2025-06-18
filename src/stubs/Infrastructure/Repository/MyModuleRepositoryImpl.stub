@@ -26,9 +26,9 @@ class {{StudlyName}}RepositoryImpl extends {{StudlyName}}Repository
      * @param array $new{{StudlyName}}
      * @return {{StudlyName}}
      */
-    public function create(array ${{camelName}}): {{StudlyName}}
+    public function create(array $new{{StudlyName}}): {{StudlyName}}
     {
-        return $this->create->execute(${{camelName}});
+        return $this->create->execute($new{{StudlyName}});
     }
 
     /**

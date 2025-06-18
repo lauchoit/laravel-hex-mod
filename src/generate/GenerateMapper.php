@@ -15,16 +15,16 @@ class GenerateMapper
     {
         // toDomain
         $mapperFields = collect([]);
-        $mapperFields->push("id: \${$camelName}->id,");
+        $mapperFields->push("id: \${$camelName}['id'],");
 
         foreach ($fields as $field) {
             $name = explode(':', $field)[0];
             $camelField = Str::camel($name);
-            $mapperFields->push(self::getIdent(3) . "{$camelField}: \${$camelName}->{$name},");
+            $mapperFields->push(self::getIdent(3) . "{$camelField}: \${$camelName}['$name'],");
         }
 
-        $mapperFields->push(self::getIdent(3) . "createdAt: \${$camelName}->created_at,");
-        $mapperFields->push(self::getIdent(3) . "updatedAt: \${$camelName}->updated_at,");
+        $mapperFields->push(self::getIdent(3) . "createdAt: \${$camelName}['created_at'],");
+        $mapperFields->push(self::getIdent(3) . "updatedAt: \${$camelName}['updated_at'],");
 
         $mapperBlock = $mapperFields->implode("\n");
 
@@ -34,7 +34,7 @@ class GenerateMapper
         foreach ($fields as $field) {
             $name = explode(':', $field)[0];
             $camelField = Str::camel($name);
-            $persistenceFields->push(self::getIdent(2) . "\$model->{$name} = \$data['{$camelField}'] ?? \$model->{$name};");
+            $persistenceFields->push(self::getIdent(2) . "\$model['$name'] = \$data['{$camelField}'] ?? \$model['$name'];");
         }
 
         $persistenceBlock = $persistenceFields->implode("\n");

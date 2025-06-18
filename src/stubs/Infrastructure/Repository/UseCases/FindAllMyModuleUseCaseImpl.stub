@@ -15,6 +15,6 @@ class FindAll{{StudlyName}}UseCaseImpl
     public function execute(): array
     {
         ${{camelName}}Models = {{StudlyName}}Model::all();
-        return {{StudlyName}}Mapper::toDomainArray(${{camelName}}Models);
+        return {{StudlyName}}Mapper::toDomainArray(${{camelName}}Models->toArray());
     }
 }

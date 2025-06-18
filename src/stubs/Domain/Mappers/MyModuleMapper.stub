@@ -11,10 +11,10 @@ class {{StudlyName}}Mapper
     /**
      * Maps the fields from the {{StudlyName}}Model to the {{StudlyName}} entity.
      *
-     * @param {{StudlyName}}Model ${{camelName}}
+     * @param array ${{camelName}}
      * @return {{StudlyName}}
      */
-    public static function toDomain({{StudlyName}}Model ${{camelName}}): {{StudlyName}}
+    public static function toDomain(array ${{camelName}}): {{StudlyName}}
     {
         return new {{StudlyName}}(
             {{mapperFields}}
@@ -22,27 +22,26 @@ class {{StudlyName}}Mapper
     }
 
     /**
-     * Converts a collection of {{StudlyName}}Models models to an array of {{StudlyName}}.
+     * Converts a array of {{StudlyName}}Models models to an array of {{StudlyName}}.
      *
-     * @param Collection ${{camelName}}Models
+     * @param array ${{camelName}}Models
      * @return {{StudlyName}}[]
      */
-    public static function toDomainArray(Collection ${{camelName}}Models): array
+    public static function toDomainArray(array ${{camelName}}Models): array
     {
-        return ${{camelName}}Models->map(function ({{StudlyName}}Model ${{camelName}}Model) {
-            return self::toDomain(${{camelName}}Model);
-        })->toArray();
+        return array_map(fn(array ${{camelName}}Model) => self::toDomain(${{camelName}}Model), ${{camelName}}Models);
     }
 
     /**
      * Maps raw data to the {{StudlyName}}Model for persistence.
      *
      * @param array $data
-     * @return {{StudlyName}}Model
+     * @param array|null $carroModel
+     * @return array
      */
-    public static function toPersistence(array $data, ?{{StudlyName}}Model ${{camelName}}Model = null): {{StudlyName}}Model
+    public static function toPersistence(array $data, ?array ${{camelName}}Model = null): array
     {
-        $model = ${{camelName}}Model ?? new {{StudlyName}}Model();
+        $model = ${{camelName}}Model ?? array();
 
 {{persistenceFields}}
 

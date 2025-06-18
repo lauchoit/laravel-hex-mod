@@ -8,13 +8,15 @@ abstract class {{StudlyName}}Repository
 {
     /**
      * Creates a new {{StudlyName}} entity.
-     * @param array ${{camelName}}
+     *
+     * @param array $new{{StudlyName}}
      * @return {{StudlyName}}
      */
-    abstract public function create(array ${{camelName}}): {{StudlyName}};
+    abstract public function create(array $new{{StudlyName}}): {{StudlyName}};
 
     /**
      * Finds all {{StudlyName}} entities.
+     *
      * @return {{StudlyName}}[]
      */
     abstract public function findAll(): array;

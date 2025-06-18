@@ -4,7 +4,6 @@ namespace Lauchoit\LaravelHexMod\{{StudlyName}}\Application\UseCases;
 
 use Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Entity\{{StudlyName}};
 use Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Repository\{{StudlyName}}Repository;
-use Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Exceptions\{{StudlyName}}NotFoundException;
 
 readonly class FindById{{StudlyName}}UseCase
 {

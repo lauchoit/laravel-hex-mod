@@ -19,6 +19,6 @@ class FindById{{StudlyName}}UseCaseImpl
         if (!${{camelName}}Model) {
             return null;
         }
-        return {{StudlyName}}Mapper::toDomain(${{camelName}}Model);
+        return {{StudlyName}}Mapper::toDomain(${{camelName}}Model->toArray());
     }
 }
