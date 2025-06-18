@@ -8,5 +8,5 @@ Route::prefix('api/{{kebabName}}')->group(function () {
     Route::get('/', [{{StudlyName}}Controller::class, 'findAll'])->name('{{kebabName}}.findAll');
     Route::get('/{{{camelName}}Id}', [{{StudlyName}}Controller::class, 'findById'])->name('{{kebabName}}.findById');
     Route::delete('/{{{camelName}}Id}', [{{StudlyName}}Controller::class, 'deleteById'])->name('{{kebabName}}.deleteById');
-    Route::put('/{{{camelName}}Id}', [{{StudlyName}}Controller::class, 'updateById'])->name('{{kebabName}}.updateById');
+    Route::patch('/{{{camelName}}Id}', [{{StudlyName}}Controller::class, 'updateById'])->name('{{kebabName}}.updateById');
 })->middleware('api');

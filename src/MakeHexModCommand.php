@@ -9,12 +9,16 @@ use Lauchoit\LaravelHexMod\generate\GenerateEntitySource;
 use Lauchoit\LaravelHexMod\generate\GenerateMapper;
 use Lauchoit\LaravelHexMod\generate\GenerateCreateRequest;
 use Lauchoit\LaravelHexMod\generate\GenerateResource;
+use Lauchoit\LaravelHexMod\generate\GenerateTestEntity;
+use Lauchoit\LaravelHexMod\generate\GenerateTestException;
+use Lauchoit\LaravelHexMod\generate\GenerateTestFeatureCreate;
 use Lauchoit\LaravelHexMod\generate\GenerateUpdateRequest;
 use Lauchoit\LaravelHexMod\generate\GenerateValidationResponse;
 use Lauchoit\LaravelHexMod\inject\InjectBindingInAppServiceProvider;
 use Lauchoit\LaravelHexMod\inject\InjectModulesRoutes;
 use Lauchoit\LaravelHexMod\updates\UpdateMigrationFields;
 use Lauchoit\LaravelHexMod\updates\UpdateModelFillable;
+use Lauchoit\LaravelHexMod\updates\UpdatePhpunit;
 use Illuminate\Support\{Str, Arr};
 use Illuminate\Support\Facades\{Artisan, File};
 
@@ -67,6 +71,7 @@ class MakeHexModCommand extends Command
             }
         }
 
+        UpdatePhpunit::run($this);
         UpdateModelFillable::run($this, $studlyName, $fields);
         UpdateMigrationFields::run($this, $studlyName, $fields);
 
@@ -100,6 +105,10 @@ class MakeHexModCommand extends Command
             "Infrastructure/Repository/UseCases/UpdateByIdMyModuleUseCaseImpl.stub",
             "Infrastructure/Resources/MyModuleResource.stub",
             "Infrastructure/Routes/MyModuleRoutes.stub",
+            "Tests/Unit/Domain/Entity/MyModuleTest.stub",
+            "Tests/Unit/Domain/Entity/MyModuleSourceTest.stub",
+            "Tests/Unit/Domain/Exceptions/MyModuleNotFoundExceptionTest.stub",
+            "Tests/Feature/CreateMyModuleTest.stub",
         ]);
 
         foreach ($files as $relativePath) {
@@ -156,6 +165,20 @@ class MakeHexModCommand extends Command
                 $content = GenerateResource::run($fields, $content, $camelName);
             }
 
+            if (str_contains($relativePath, "Tests/Unit/Domain/Entity/{$studlyName}Test.stub")) {
+                $content = GenerateTestEntity::run($fields, $content, $camelName);
+            }
+
+            if (str_contains($relativePath, "Tests/Unit/Domain/Entity/{$studlyName}SourceTest.stub")) {
+                $content = GenerateTestEntity::runSource($fields, $content, $camelName);
+            }
+            if (str_contains($relativePath, "Tests/Unit/Domain/Exceptions/{$studlyName}NotFoundExceptionTest.stub")) {
+                $content = GenerateTestException::run($studlyName, $content);
+            }
+
+            if (str_contains($relativePath, "Tests/Feature/Create{$studlyName}Test.stub")) {
+                $content = GenerateTestFeatureCreate::run($fields, $content, $camelName, $kebabName, $studlyName);
+            }
 
             file_put_contents($targetPath, $content);
             $this->line("✅ Archivo creado: " . str_replace(base_path() . '/', '', $targetPath));

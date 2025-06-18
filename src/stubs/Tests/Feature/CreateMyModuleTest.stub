@@ -1,0 +1,67 @@
+<?php
+
+namespace Lauchoit\LaravelHexMod\{{StudlyName}}\Tests\Feature;
+
+use Tests\TestCase;
+use Laravel\Sanctum\Sanctum;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Entity\{{StudlyName}};
+use Lauchoit\LaravelHexMod\{{StudlyName}}\Infrastructure\Resources\{{StudlyName}}Resource;
+
+class Create{{StudlyName}}Test extends TestCase
+{
+    use DatabaseTransactions;
+
+    #[TestDox('Create {{camelName}}')]
+    #[Test]
+    public function create_{{camelName}}_check_entity(): void
+    {
+        $data = {{validData}};
+
+        $response = $this->postJson('/api/{{kebabName}}', $data)
+            ->assertStatus(201);
+
+        $this->assertInstanceOf({{StudlyName}}Resource::class, $response->getOriginalContent()['data']);
+        $this->assertInstanceOf({{StudlyName}}::class, $response->getOriginalContent()['data']->resource);
+    }
+
+    #[TestDox('Create {{camelName}} check response structure')]
+    #[Test]
+    public function create_{{camelName}}_check_structure(): void
+    {
+        $data = {{validData}};
+
+        $response = $this->post('/api/{{kebabName}}', $data);
+
+        $response->assertStatus(201)
+             ->assertJsonStructure([
+                 'ok',
+                 'message',
+                 'data' => [
+                     'id',
+{{jsonFields}}
+                 ],
+             ]);
+        $response->assertJsonFragment($data);
+        $this->assertDatabaseHas('{{kebabName}}s', {{databaseData}});
+    }
+
+    #[TestDox('Create {{camelName}} with missing fields (NO registered)')]
+    #[Test]
+    public function create_{{camelName}}_with_missing_field(): void
+    {
+        $data = {{invalidData}};
+
+        $response = $this->post('/api/{{kebabName}}', $data);
+
+        $response->assertStatus(422)
+            ->assertJsonStructure([
+                'ok',
+                'message',
+                'data',
+            ]);
+        $response->assertJsonFragment({{invalidFragment}});
+    }
+}

@@ -1,0 +1,19 @@
+<?php
+
+namespace Lauchoit\LaravelHexMod\{{StudlyName}}\Tests\Unit\Domain\Entity;
+
+use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
+use Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Entity\{{StudlyName}}Source;
+
+class {{StudlyName}}SourceTest extends TestCase
+{
+    #[TestDox('Verify that {{StudlyName}}Source::FIELDS contains the expected attributes')]
+    #[Test]
+    public function fields_{{camelName}}_source_contains_expected_attributes(): void
+    {
+        $expected = {{expectedArray}};
+        $this->assertSame($expected, {{StudlyName}}Source::FIELDS);
+    }
+}

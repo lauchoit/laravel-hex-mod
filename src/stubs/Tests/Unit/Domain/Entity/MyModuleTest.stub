@@ -1,0 +1,28 @@
+<?php
+
+namespace Lauchoit\LaravelHexMod\{{StudlyName}}\Tests\Unit\Domain\Entity;
+
+use Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Entity\{{StudlyName}};
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
+use Tests\TestCase;
+
+class {{StudlyName}}Test extends TestCase
+{
+    #[TestDox('Test getters and setters of {{StudlyName}} entity')]
+    #[Test]
+    public function test_{{camelName}}_entity_getters_and_setters(): void
+    {
+        ${{camelName}} = new {{StudlyName}}(
+            {{testConstructor}}
+        );
+
+        // Verificar getters iniciales
+{{getters}}
+
+        // Probar setters
+{{setters}}
+
+{{asserts}}
+    }
+}

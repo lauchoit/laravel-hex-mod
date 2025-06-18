@@ -1,0 +1,33 @@
+<?php
+
+namespace Lauchoit\LaravelHexMod\{{StudlyName}}\Tests\Unit\Domain\Exceptions;
+
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
+use Tests\TestCase;
+use Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Exceptions\{{StudlyName}}NotFoundException;
+
+class {{StudlyName}}NotFoundExceptionTest extends TestCase
+{
+    #[TestDox('Test {{StudlyName}}NotFoundException message with integer ID')]
+    #[Test]
+    public function exception_message_with_integer_id(): void
+    {
+        $id = 123;
+        $exception = new {{StudlyName}}NotFoundException($id);
+
+        $this->assertInstanceOf({{StudlyName}}NotFoundException::class, $exception);
+        $this->assertSame("{{StudlyName}} with ID 123 not found.", $exception->getMessage());
+    }
+
+    #[TestDox('Test {{StudlyName}}NotFoundException message with string ID')]
+    #[Test]
+    public function exception_message_with_string_id(): void
+    {
+        $id = 'abc123';
+        $exception = new {{StudlyName}}NotFoundException($id);
+
+        $this->assertInstanceOf({{StudlyName}}NotFoundException::class, $exception);
+        $this->assertSame("{{StudlyName}} with ID abc123 not found.", $exception->getMessage());
+    }
+}
