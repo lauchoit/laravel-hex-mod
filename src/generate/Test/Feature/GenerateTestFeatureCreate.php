@@ -13,7 +13,14 @@ class GenerateTestFeatureCreate
         // CamelCase para payload JSON
         $validCamel = $filtered->mapWithKeys(function ($field) {
             [$name, $type] = explode(':', $field);
-            return [Str::camel($name) => self::exampleValue($type, $name)];
+            $value = self::exampleValue($type, $name);
+
+            if ($type === 'date') {
+                // Ajustamos al formato ISO retornado por Laravel
+                $value .= 'T00:00:00.000000Z';
+            }
+
+            return [Str::camel($name) => $value];
         })->all();
         $validData = self::toPhpArrayString($validCamel, 2);
 
@@ -22,7 +29,7 @@ class GenerateTestFeatureCreate
             [$name, $type] = explode(':', $field);
             return [Str::snake($name) => self::exampleValue($type, $name)];
         })->all();
-        $databaseData = self::toPhpArrayString($validSnake, 3); // indent extra para quedar dentro del método
+        $databaseData = self::toPhpArrayString($validSnake, 3);
 
         // Campos vacíos camelCase
         $invalidCamel = $filtered->mapWithKeys(function ($field) {
@@ -53,6 +60,7 @@ class GenerateTestFeatureCreate
             $content
         );
     }
+
 
     private static function exampleValue(string $type, string $name): mixed
     {
