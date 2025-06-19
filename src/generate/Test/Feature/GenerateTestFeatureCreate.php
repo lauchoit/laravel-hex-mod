@@ -1,6 +1,6 @@
 <?php
 
-namespace Lauchoit\LaravelHexMod\generate;
+namespace Lauchoit\LaravelHexMod\generate\Test\Feature;
 
 use Illuminate\Support\Str;
 
@@ -61,7 +61,7 @@ class GenerateTestFeatureCreate
             'integer' => 1,
             'float' => 123.45,
             'boolean' => true,
-            'date', 'datetime' => '2024-01-01 00:00:00',
+            'date', 'datetime' => '2025-07-01',
             'json' => ['key' => 'value'],
             default => 'value'
         };

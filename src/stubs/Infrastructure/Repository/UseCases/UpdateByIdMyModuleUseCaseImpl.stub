@@ -10,7 +10,7 @@ use Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Mappers\{{StudlyName}}Mapper;
 class UpdateById{{StudlyName}}UseCaseImpl
 {
     /**
-     * Update a {{{{StudlyName}}}} by its ID.
+     * Update a {{StudlyName}} by its ID.
      *
      * @param int ${{camelName}}Id
      * @param array $data
@@ -22,9 +22,11 @@ class UpdateById{{StudlyName}}UseCaseImpl
         if (!${{camelName}}Model) {
             throw new {{StudlyName}}NotFoundException(${{camelName}}Id);
         }
-        ${{camelName}}Updated = {{StudlyName}}Mapper::toPersistence($data, ${{camelName}}Model);
-        ${{camelName}}Updated->save();
 
-        return {{StudlyName}}Mapper::toDomain(${{camelName}}Updated);
+        ${{camelName}}Updated = {{StudlyName}}Mapper::toPersistence($data, ${{camelName}}Model->toArray());
+        ${{camelName}}Model->fill(${{camelName}}Updated);
+        ${{camelName}}Model->save();
+
+        return {{StudlyName}}Mapper::toDomain(${{camelName}}Model->toArray());
     }
 }

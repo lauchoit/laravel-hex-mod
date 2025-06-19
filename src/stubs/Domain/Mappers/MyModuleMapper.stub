@@ -36,7 +36,7 @@ class {{StudlyName}}Mapper
      * Maps raw data to the {{StudlyName}}Model for persistence.
      *
      * @param array $data
-     * @param array|null $carroModel
+     * @param array|null ${{camelName}}Model
      * @return array
      */
     public static function toPersistence(array $data, ?array ${{camelName}}Model = null): array

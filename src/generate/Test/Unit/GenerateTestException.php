@@ -1,6 +1,6 @@
 <?php
 
-namespace Lauchoit\LaravelHexMod\generate;
+namespace Lauchoit\LaravelHexMod\generate\Test\Unit;
 
 class GenerateTestException
 {
