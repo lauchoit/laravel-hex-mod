@@ -8,6 +8,7 @@ use Lauchoit\LaravelHexMod\generate\GenerateEntity;
 use Lauchoit\LaravelHexMod\generate\GenerateEntitySource;
 use Lauchoit\LaravelHexMod\generate\GenerateMapper;
 use Lauchoit\LaravelHexMod\generate\GenerateCreateRequest;
+use Lauchoit\LaravelHexMod\generate\GenerateModel;
 use Lauchoit\LaravelHexMod\generate\GenerateResource;
 use Lauchoit\LaravelHexMod\generate\GenerateUpdateRequest;
 use Lauchoit\LaravelHexMod\generate\GenerateValidationResponse;
@@ -16,6 +17,7 @@ use Lauchoit\LaravelHexMod\generate\Test\Unit\GenerateTestEntity;
 use Lauchoit\LaravelHexMod\generate\Test\Unit\GenerateTestException;
 use Lauchoit\LaravelHexMod\inject\InjectBindingInAppServiceProvider;
 use Lauchoit\LaravelHexMod\inject\InjectModulesRoutes;
+use Lauchoit\LaravelHexMod\updates\UpdateFactory;
 use Lauchoit\LaravelHexMod\updates\UpdateMigrationFields;
 use Lauchoit\LaravelHexMod\updates\UpdateModelFillable;
 use Lauchoit\LaravelHexMod\updates\UpdatePhpunit;
@@ -50,11 +52,10 @@ class MakeHexModCommand extends Command
         $kebabName  = Str::kebab($name);
         $camelName = Str::camel($name);
 
-        Artisan::call('make:model', [
-            'name' => $studlyName,
-            '-m' => true,
-            '-f' => true,
-        ]);
+        $tableName = "create_".Str::snake(Str::pluralStudly($studlyName))."_table";
+        Artisan::call("make:migration $tableName");
+        Artisan::call("make:factory {$studlyName}Factory");
+
 
         $fields = $this->option('field');
         if (empty($fields)) {
@@ -72,8 +73,9 @@ class MakeHexModCommand extends Command
         }
 
         UpdatePhpunit::run($this);
-        UpdateModelFillable::run($this, $studlyName, $fields);
+//        UpdateModelFillable::run($this, $studlyName, $fields);
         UpdateMigrationFields::run($this, $studlyName, $fields);
+        UpdateFactory::run($this, $studlyName, $fields);
 
         InjectBindingInAppServiceProvider::run($this, $studlyName);
         InjectModulesRoutes::run($this, $studlyName, $kebabName);
@@ -94,6 +96,7 @@ class MakeHexModCommand extends Command
             "Application/UseCases/FindAllMyModuleUseCase.stub",
             "Application/UseCases/FindByIdMyModuleUseCase.stub",
             "Application/UseCases/UpdateByIdMyModuleUseCase.stub",
+            "Infrastructure/Model/MyModule.stub",
             "Infrastructure/Requests/CreateMyModuleRequest.stub",
             "Infrastructure/Requests/UpdateMyModuleRequest.stub",
             "Infrastructure/Controllers/MyModuleController.stub",
@@ -180,16 +183,19 @@ class MakeHexModCommand extends Command
                 $content = GenerateTestFeatureCreate::run($fields, $content, $camelName, $kebabName, $studlyName);
             }
 
+            if (str_contains($relativePath, "Infrastructure/Model/{$studlyName}.stub")) {
+                $content = GenerateModel::run($studlyName, $fields, $content);
+            }
+
             file_put_contents($targetPath, $content);
             $this->line("✅ Archivo creado: " . str_replace(base_path() . '/', '', $targetPath));
         }
 
         GenerateApiResponse::run($this);
-
         GenerateValidationResponse::run($this);
 
-        sleep(1);
-        Artisan::call('optimize');
+        Artisan::call('optimize:clear');
+        $this->line(Artisan::output());
         $this->info("🎉 Módulo {$studlyName} generado correctamente.");
     }
 }

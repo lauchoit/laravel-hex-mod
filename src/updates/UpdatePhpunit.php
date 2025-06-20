@@ -6,50 +6,39 @@ use Illuminate\Console\Command;
 
 class UpdatePhpunit
 {
-    public static function run(Command $command): void
-    {
-        $path = base_path('phpunit.xml');
+public static function run(Command $command): void
+{
+$path = base_path('phpunit.xml');
 
-        $content = <<<XML
-<?xml version="1.0" encoding="UTF-8"?>
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
-         bootstrap="vendor/autoload.php"
-         colors="true"
->
-    <testsuites>
-        <testsuite name="Unit">
-            <directory>tests/Unit</directory>
-        </testsuite>
-        <testsuite name="Feature">
-            <directory>tests/Feature</directory>
-        </testsuite>
-        <testsuite name="Feature">
-            <directory>src</directory>
-        </testsuite>
-    </testsuites>
-    <source>
-        <include>
-            <directory>app</directory>
-        </include>
-    </source>
-    <php>
-        <env name="APP_ENV" value="testing"/>
-        <env name="APP_MAINTENANCE_DRIVER" value="file"/>
-        <env name="BCRYPT_ROUNDS" value="4"/>
-        <env name="CACHE_STORE" value="array"/>
-        <env name="DB_CONNECTION" value="sqlite"/>
-        <env name="DB_DATABASE" value=":memory:"/>
-        <env name="MAIL_MAILER" value="array"/>
-        <env name="PULSE_ENABLED" value="false"/>
-        <env name="QUEUE_CONNECTION" value="sync"/>
-        <env name="SESSION_DRIVER" value="array"/>
-        <env name="TELESCOPE_ENABLED" value="false"/>
-    </php>
-</phpunit>
-XML;
-
-        file_put_contents($path, $content);
-        $command->info("✅ phpunit.xml actualizado correctamente.");
-    }
+if (!file_exists($path)) {
+$command->warn('❌ No se encontró el archivo phpunit.xml');
+return;
 }
+
+$content = file_get_contents($path);
+
+// Verificamos si ya existe el <directory>src</directory> dentro de Feature
+if (preg_match('/<testsuite name="Feature">(.+?)<\/testsuite>/s', $content, $matches)) {
+    if (str_contains($matches[1], '<directory>src</directory>')) {
+    $command->info("⚠️ El bloque <directory>src</directory> ya existe dentro del testsuite Feature.");
+    return;
+    }
+
+    // Insertar <directory>src</directory> antes de </testsuite>
+$updatedSuite = str_replace(
+'</testsuite>',
+"    <directory>src</directory>\n    </testsuite>",
+$matches[0]
+);
+
+// Reemplazar en todo el contenido
+$content = str_replace($matches[0], $updatedSuite, $content);
+file_put_contents($path, $content);
+
+$command->info('✅ Se agregó <directory>src</directory> dentro del testsuite Feature.');
+return;
+}
+
+$command->warn('⚠️ No se encontró el bloque <testsuite name="Feature"> en phpunit.xml');
+    }
+    }

@@ -1,0 +1,70 @@
+<?php
+
+namespace Lauchoit\LaravelHexMod\{{StudlyName}}\Infrastructure\Model;
+
+use Database\Factories\{{StudlyName}}Factory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Entity\{{StudlyName}}Source;
+
+{{phpDocBlock}}
+class {{StudlyName}} extends Model
+{
+    /** @use HasFactory<\Database\Factories\{{StudlyName}}Factory> */
+    use HasFactory;
+
+    /**
+     * Create a new factory instance for the {{StudlyName}} model.
+     */
+    protected static function newFactory()
+    {
+        return {{StudlyName}}Factory::new();
+    }
+
+    /**
+     * The primary key for the model.
+     *
+     * @var string
+     */
+    protected $primaryKey = 'id';
+
+    /**
+     * The "type" of the primary key ID.
+     *
+     * @var string
+     */
+    protected $keyType = 'int';
+
+    /**
+     * Indicates if the IDs are auto-incrementing.
+     *
+     * @var bool
+     */
+    public $incrementing = true;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var list<string>
+     */
+    protected $fillable = {{StudlyName}}Source::FIELDS;
+
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var list<string>
+     */
+    protected $hidden = [];
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+{{castsArray}}
+        ];
+    }
+}

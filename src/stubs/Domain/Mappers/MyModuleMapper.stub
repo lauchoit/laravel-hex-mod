@@ -3,7 +3,6 @@
 namespace Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Mappers;
 
 use Illuminate\Support\Collection;
-use App\Models\{{StudlyName}} as {{StudlyName}}Model;
 use Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Entity\{{StudlyName}};
 
 class {{StudlyName}}Mapper

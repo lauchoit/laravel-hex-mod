@@ -2,7 +2,7 @@
 
 namespace Lauchoit\LaravelHexMod\{{StudlyName}}\Infrastructure\Repository\UseCases;
 
-use App\Models\{{StudlyName}} as {{StudlyName}}Model;
+use Lauchoit\LaravelHexMod\{{StudlyName}}\Infrastructure\Model\{{StudlyName}} as {{StudlyName}}Model;
 use Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Entity\{{StudlyName}};
 use Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Exceptions\{{StudlyName}}NotFoundException;
 use Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Mappers\{{StudlyName}}Mapper;
