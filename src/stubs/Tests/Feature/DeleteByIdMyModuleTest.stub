@@ -1,0 +1,39 @@
+<?php
+
+namespace Lauchoit\LaravelHexMod\{{StudlyName}}\Tests\Feature;
+
+use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
+use Lauchoit\LaravelHexMod\{{StudlyName}}\Infrastructure\Model\{{StudlyName}};
+
+class DeleteById{{StudlyName}}Test extends TestCase
+{
+    #[TestDox('Delete a {{StudlyName}} by ID')]
+    #[Test]
+    public function delete_{{camelName}}_by_id()
+    {
+        $carro = {{StudlyName}}::factory()->create([
+            'attribute1' => 'value1',
+            'attribute2' => 'value2',
+        ]);
+
+        $url = "/api/{{camelName}}/{$carro->id}";
+        $response = $this->delete($url);
+
+        $response->assertStatus(200);
+    }
+
+    #[TestDox('Delete a {{StudlyName}} with bad ID')]
+    #[Test]
+    public function delete_{{camelName}}_with_bad_id()
+    {
+        $url = "/api/{{camelName}}/999999";
+        $response = $this->delete($url);
+
+        $response->assertStatus(404);
+        $response->assertJson([
+            'message' => '{{StudlyName}} with ID 999999 not found.',
+        ]);
+    }
+}

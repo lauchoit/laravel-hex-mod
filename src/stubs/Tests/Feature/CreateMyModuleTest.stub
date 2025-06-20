@@ -14,7 +14,7 @@ class Create{{StudlyName}}Test extends TestCase
 {
     use DatabaseTransactions;
 
-    #[TestDox('Create {{camelName}}')]
+    #[TestDox('Create {{camelName}} with correct data (OK)')]
     #[Test]
     public function create_{{camelName}}_check_entity(): void
     {

@@ -112,6 +112,7 @@ class MakeHexModCommand extends Command
             "Tests/Unit/Domain/Entity/MyModuleSourceTest.stub",
             "Tests/Unit/Domain/Exceptions/MyModuleNotFoundExceptionTest.stub",
             "Tests/Feature/CreateMyModuleTest.stub",
+            "Tests/Feature/DeleteByIdMyModuleTest.stub",
         ]);
 
         foreach ($files as $relativePath) {
@@ -179,13 +180,18 @@ class MakeHexModCommand extends Command
                 $content = GenerateTestException::run($studlyName, $content);
             }
 
+            if (str_contains($relativePath, "Infrastructure/Model/{$studlyName}.stub")) {
+                $content = GenerateModel::run($studlyName, $fields, $content);
+            }
+
             if (str_contains($relativePath, "Tests/Feature/Create{$studlyName}Test.stub")) {
                 $content = GenerateTestFeatureCreate::run($fields, $content, $camelName, $kebabName, $studlyName);
             }
 
-            if (str_contains($relativePath, "Infrastructure/Model/{$studlyName}.stub")) {
-                $content = GenerateModel::run($studlyName, $fields, $content);
+            if (str_contains($relativePath, "Tests/Feature/DeleteById{$studlyName}Test.stub")) {
+                $content = GenerateTestFeatureCreate::run($fields, $content, $camelName, $kebabName, $studlyName);
             }
+
 
             file_put_contents($targetPath, $content);
             $this->line("✅ Archivo creado: " . str_replace(base_path() . '/', '', $targetPath));
