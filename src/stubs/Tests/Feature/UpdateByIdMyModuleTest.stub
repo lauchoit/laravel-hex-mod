@@ -18,7 +18,6 @@ class UpdateById{{StudlyName}}Test extends TestCase
     #[Test]
     public function update_{{camelName}}_by_id_with_correct_data(): void
     {
-        $this->withoutExceptionHandling();
         ${{camelName}} = {{StudlyName}}Model::factory()->create();
 
         $data = [
@@ -41,14 +40,15 @@ class UpdateById{{StudlyName}}Test extends TestCase
         $this->assertequals('success.updated', $responseOriginal['message']);
         $this->assertInstanceOf({{StudlyName}}Resource::class, $responseOriginal['data']);
         $this->assertInstanceOf({{StudlyName}}::class, $responseOriginal['data']->resource);
-        $this->assertDatabaseHas('{{snakeName}}', $data);
+        $this->assertDatabaseHas('{{snakeName}}', [
+{{snakeNameData}}
+        ]);
     }
 
     #[TestDox('Update {{StudlyName}} by ID,with only one field')]
     #[Test]
     public function update_{{camelName}}_by_id_with_only_one_field(): void
     {
-        $this->withoutExceptionHandling();
         ${{camelName}} = {{StudlyName}}Model::factory()->create();
 
         $data = [
@@ -69,7 +69,6 @@ class UpdateById{{StudlyName}}Test extends TestCase
     #[Test]
     public function update_{{camelName}}_with_bad_id(): void
     {
-        $this->withoutExceptionHandling();
         ${{camelName}} = {{StudlyName}}Model::factory()->create();
 
         $data = [
