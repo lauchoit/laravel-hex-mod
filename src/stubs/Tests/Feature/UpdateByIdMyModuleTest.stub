@@ -41,7 +41,7 @@ class UpdateById{{StudlyName}}Test extends TestCase
         $this->assertequals('success.updated', $responseOriginal['message']);
         $this->assertInstanceOf({{StudlyName}}Resource::class, $responseOriginal['data']);
         $this->assertInstanceOf({{StudlyName}}::class, $responseOriginal['data']->resource);
-        $this->assertDatabaseHas('{{camelName}}s', $data);
+        $this->assertDatabaseHas('{{snakeName}}', $data);
     }
 
     #[TestDox('Update {{StudlyName}} by ID,with only one field')]
@@ -60,7 +60,7 @@ class UpdateById{{StudlyName}}Test extends TestCase
         $this->patchJson($url, $data)
             ->assertStatus(200);
 
-        $this->assertDatabaseHas('{{camelName}}s', [
+        $this->assertDatabaseHas('{{snakeName}}', [
 {{assertDatabaseHasPartial}}
         ]);
     }
@@ -83,7 +83,7 @@ class UpdateById{{StudlyName}}Test extends TestCase
 
         $this->assertequals('{{StudlyName}} with ID 999999 not found.', $response->json()['message']);
 
-        $this->assertDatabaseMissing('{{camelName}}s', [
+        $this->assertDatabaseMissing('{{snakeName}}', [
 {{assertDatabaseMissing}}
         ]);
     }

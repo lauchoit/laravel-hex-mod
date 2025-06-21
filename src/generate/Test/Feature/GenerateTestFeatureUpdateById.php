@@ -6,7 +6,7 @@ use Illuminate\Support\Str;
 
 class GenerateTestFeatureUpdateById
 {
-    public static function run(array $fields, string $content, string $camelName, string $studlyName): string
+    public static function run(array $fields, string $content, string $camelName, string $studlyName, string $snakeName): string
     {
         $filtered = collect($fields)->reject(fn($field) => in_array(explode(':', $field)[0], ['id', 'createdAt', 'updatedAt']));
 
@@ -51,6 +51,7 @@ class GenerateTestFeatureUpdateById
                 '{{assertDatabaseHasPartial}}',
                 '{{assertDatabaseMissing}}',
                 '{{jsonFields}}',
+                '{{snakeName}}',
             ],
             [
                 $camelName,
@@ -60,6 +61,7 @@ class GenerateTestFeatureUpdateById
                 $assertDatabaseHasPartial,
                 $assertDatabaseMissing,
                 $jsonFields,
+                $snakeName,
             ],
             $content
         );

@@ -53,8 +53,6 @@ class MakeHexModCommand extends Command
         $camelName  = Str::camel($name);
         $snakeName = Str::snake(Str::pluralStudly($studlyName));
 
-//        dd($snakeName);
-
         $tableName = "create_" . Str::snake(Str::pluralStudly($studlyName)) . "_table";
         Artisan::call("make:migration $tableName");
         Artisan::call("make:factory {$studlyName}Factory");
