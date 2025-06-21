@@ -25,10 +25,20 @@ class GenerateModel
                 default => 'string',
             };
 
+            $castType = match ($type) {
+                'integer' => 'int',
+                'float' => 'float',
+                'boolean' => 'bool',
+                'date' => 'date:Y-m-d',
+                'datetime' => 'datetime:Y-m-d H:i:s',
+                'json', 'text', 'longText' => 'string',
+                default => 'string',
+            };
+
             $docLines[] = " * @property {$docType} \${$name}";
 
             if (in_array($type, $castTypes)) {
-                $casts[] = "            '{$name}' => '{$type}',";
+                $casts[] = "            '{$name}' => '{$castType}',";
             }
         }
 

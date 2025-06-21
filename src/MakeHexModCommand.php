@@ -37,48 +37,59 @@ class MakeHexModCommand extends Command
 
         $existsSrc = base_path('src');
         if (is_dir($existsSrc)) {
+            $modules = collect(scandir(base_path('src')))
+                ->filter(fn($item) => !in_array($item, ['.', '..']) && is_dir(base_path("src/{$item}")))
+                ->values()
+                ->all();
 
-        $modules = collect(scandir(base_path('src')))
-            ->filter(fn($item) => !in_array($item, ['.', '..']) && is_dir(base_path("src/{$item}")))
-            ->values()
-            ->all();
-
-        $exists = in_array(strtolower($name), array_map('strtolower', $modules));
-        if($exists) {
-            $this->warn("⚠️ This module {$name} already.");
-            return;
+            if (in_array(strtolower($name), array_map('strtolower', $modules))) {
+                $this->warn("⚠️ This module {$name} already exists.");
+                return;
             }
         }
 
         $studlyName = Str::studly($name);
         $kebabName  = Str::kebab($name);
-        $camelName = Str::camel($name);
+        $camelName  = Str::camel($name);
+        $snakeName = Str::snake(Str::pluralStudly($studlyName));
 
-        $tableName = "create_".Str::snake(Str::pluralStudly($studlyName))."_table";
+//        dd($snakeName);
+
+        $tableName = "create_" . Str::snake(Str::pluralStudly($studlyName)) . "_table";
         Artisan::call("make:migration $tableName");
         Artisan::call("make:factory {$studlyName}Factory");
 
+        // Procesar los campos
+        $inputFields = $this->option('field');
+        $rawFields = collect($inputFields)
+            ->flatMap(fn($f) => explode(',', $f))
+            ->filter()
+            ->values();
 
-        $fields = $this->option('field');
-        if (empty($fields)) {
+        if ($rawFields->isEmpty()) {
             $fields = ['attribute1:string', 'attribute2:string'];
+        } else {
+            $fields = $rawFields->map(function ($f) {
+                if (!str_contains($f, ':')) {
+                    return "{$f}:string";
+                }
+                return $f;
+            })->toArray();
         }
 
         $validTypes = ['string', 'integer', 'float', 'date', 'datetime', 'json', 'boolean', 'text', 'longText'];
-
         foreach ($fields as $field) {
-            $parts = explode(':', $field);
-            if (count($parts) !== 2 || !in_array($parts[1], $validTypes)) {
+            [$_, $type] = explode(':', $field);
+            if (!in_array($type, $validTypes)) {
                 $this->error("❌ Tipo inválido para el campo '{$field}'. Tipos permitidos: " . implode(', ', $validTypes));
                 return;
             }
         }
 
+        // Updates y generación
         UpdatePhpunit::run($this);
-//        UpdateModelFillable::run($this, $studlyName, $fields);
         UpdateMigrationFields::run($this, $studlyName, $fields);
         UpdateFactory::run($this, $studlyName, $fields);
-
         InjectBindingInAppServiceProvider::run($this, $studlyName);
         InjectModulesRoutes::run($this, $studlyName, $kebabName);
 
@@ -129,18 +140,15 @@ class MakeHexModCommand extends Command
             );
 
             $targetPath = $basePath . '/' . str_replace('.stub', '.php', $relativePath);
+            $dir = dirname($targetPath);
 
             if (!file_exists($sourceStub)) {
                 $this->warn("❌ Stub no encontrado: $sourceStub");
                 continue;
             }
 
-            // Crear carpeta si no existe
-            $dir = dirname($targetPath);
             if (!is_dir($dir)) {
-                if (!mkdir($dir, 0755, true) && !is_dir($dir)) {
-                    throw new \RuntimeException(sprintf('Directory "%s" was not created', $dir));
-                }
+                mkdir($dir, 0755, true);
             }
 
             $content = file_get_contents($sourceStub);
@@ -181,6 +189,7 @@ class MakeHexModCommand extends Command
             if (str_contains($relativePath, "Tests/Unit/Domain/Entity/{$studlyName}SourceTest.stub")) {
                 $content = GenerateTestEntity::runSource($fields, $content, $camelName);
             }
+
             if (str_contains($relativePath, "Tests/Unit/Domain/Exceptions/{$studlyName}NotFoundExceptionTest.stub")) {
                 $content = GenerateTestException::run($studlyName, $content);
             }
@@ -190,7 +199,7 @@ class MakeHexModCommand extends Command
             }
 
             if (str_contains($relativePath, "Tests/Feature/Create{$studlyName}Test.stub")) {
-                $content = GenerateTestFeatureCreate::run($fields, $content, $camelName, $kebabName, $studlyName);
+                $content = GenerateTestFeatureCreate::run($fields, $content, $camelName, $kebabName, $studlyName, $snakeName);
             }
 
             if (str_contains($relativePath, "Tests/Feature/FindAll{$studlyName}Test.stub")) {
@@ -204,7 +213,6 @@ class MakeHexModCommand extends Command
             if (str_contains($relativePath, "Tests/Feature/UpdateById{$studlyName}Test.stub")) {
                 $content = GenerateTestFeatureUpdateById::run($fields, $content, $camelName, $studlyName);
             }
-
 
             file_put_contents($targetPath, $content);
             $this->line("✅ Archivo creado: " . str_replace(base_path() . '/', '', $targetPath));
