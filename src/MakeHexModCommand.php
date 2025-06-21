@@ -15,13 +15,13 @@ use Lauchoit\LaravelHexMod\generate\GenerateValidationResponse;
 use Lauchoit\LaravelHexMod\generate\Test\Feature\GenerateTestFeatureCreate;
 use Lauchoit\LaravelHexMod\generate\Test\Feature\GenerateTestFeatureFindAll;
 use Lauchoit\LaravelHexMod\generate\Test\Feature\GenerateTestFeatureFindById;
+use Lauchoit\LaravelHexMod\generate\Test\Feature\GenerateTestFeatureUpdateById;
 use Lauchoit\LaravelHexMod\generate\Test\Unit\GenerateTestEntity;
 use Lauchoit\LaravelHexMod\generate\Test\Unit\GenerateTestException;
 use Lauchoit\LaravelHexMod\inject\InjectBindingInAppServiceProvider;
 use Lauchoit\LaravelHexMod\inject\InjectModulesRoutes;
 use Lauchoit\LaravelHexMod\updates\UpdateFactory;
 use Lauchoit\LaravelHexMod\updates\UpdateMigrationFields;
-use Lauchoit\LaravelHexMod\updates\UpdateModelFillable;
 use Lauchoit\LaravelHexMod\updates\UpdatePhpunit;
 use Illuminate\Support\{Str, Arr};
 use Illuminate\Support\Facades\{Artisan, File};
@@ -117,6 +117,7 @@ class MakeHexModCommand extends Command
             "Tests/Feature/DeleteByIdMyModuleTest.stub",
             "Tests/Feature/FindAllMyModuleTest.stub",
             "Tests/Feature/FindByIdMyModuleTest.stub",
+            "Tests/Feature/UpdateByIdMyModuleTest.stub",
         ]);
 
         foreach ($files as $relativePath) {
@@ -198,6 +199,10 @@ class MakeHexModCommand extends Command
 
             if (str_contains($relativePath, "Tests/Feature/FindById{$studlyName}Test.stub")) {
                 $content = GenerateTestFeatureFindById::run($fields, $content, $camelName, $studlyName);
+            }
+
+            if (str_contains($relativePath, "Tests/Feature/UpdateById{$studlyName}Test.stub")) {
+                $content = GenerateTestFeatureUpdateById::run($fields, $content, $camelName, $studlyName);
             }
 
 

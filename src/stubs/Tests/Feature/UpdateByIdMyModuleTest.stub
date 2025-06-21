@@ -1,0 +1,90 @@
+<?php
+
+namespace Lauchoit\LaravelHexMod\{{StudlyName}}\Tests\Feature;
+
+use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Entity\{{StudlyName}};
+use Lauchoit\LaravelHexMod\{{StudlyName}}\Infrastructure\Model\{{StudlyName}} as {{StudlyName}}Model;
+use Lauchoit\LaravelHexMod\{{StudlyName}}\Infrastructure\Resources\{{StudlyName}}Resource;
+
+class UpdateById{{StudlyName}}Test extends TestCase
+{
+    use DatabaseTransactions;
+
+    #[TestDox('Update {{StudlyName}} by ID, verify structure and type')]
+    #[Test]
+    public function update_{{camelName}}_by_id_with_correct_data(): void
+    {
+        $this->withoutExceptionHandling();
+        ${{camelName}} = {{StudlyName}}Model::factory()->create();
+
+        $data = [
+{{updatedData}}
+        ];
+
+        $url = "/api/{{camelName}}/{${{camelName}}->id}";
+
+        $response = $this->patchJson($url, $data)
+            ->assertStatus(200);
+
+        $response->assertJsonStructure([
+            'data' => [
+{{jsonFields}}
+            ],
+        ]);
+
+        $responseOriginal = $response->getOriginalContent();
+        $this->assertTrue($responseOriginal['ok']);
+        $this->assertequals('success.updated', $responseOriginal['message']);
+        $this->assertInstanceOf({{StudlyName}}Resource::class, $responseOriginal['data']);
+        $this->assertInstanceOf({{StudlyName}}::class, $responseOriginal['data']->resource);
+        $this->assertDatabaseHas('{{camelName}}s', $data);
+    }
+
+    #[TestDox('Update {{StudlyName}} by ID,with only one field')]
+    #[Test]
+    public function update_{{camelName}}_by_id_with_only_one_field(): void
+    {
+        $this->withoutExceptionHandling();
+        ${{camelName}} = {{StudlyName}}Model::factory()->create();
+
+        $data = [
+{{onlyOneFieldData}}
+        ];
+
+        $url = "/api/{{camelName}}/{${{camelName}}->id}";
+
+        $this->patchJson($url, $data)
+            ->assertStatus(200);
+
+        $this->assertDatabaseHas('{{camelName}}s', [
+{{assertDatabaseHasPartial}}
+        ]);
+    }
+
+    #[TestDox('Update {{StudlyName}} with bad ID, expect 404')]
+    #[Test]
+    public function update_{{camelName}}_with_bad_id(): void
+    {
+        $this->withoutExceptionHandling();
+        ${{camelName}} = {{StudlyName}}Model::factory()->create();
+
+        $data = [
+{{onlyOneFieldData}}
+        ];
+
+        $url = "/api/{{camelName}}/999999";
+
+        $response = $this->patchJson($url, $data)
+            ->assertStatus(404);
+
+        $this->assertequals('{{StudlyName}} with ID 999999 not found.', $response->json()['message']);
+
+        $this->assertDatabaseMissing('{{camelName}}s', [
+{{assertDatabaseMissing}}
+        ]);
+    }
+}
