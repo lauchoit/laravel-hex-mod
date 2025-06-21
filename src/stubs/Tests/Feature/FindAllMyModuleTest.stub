@@ -1,0 +1,38 @@
+<?php
+
+namespace Lauchoit\LaravelHexMod\{{StudlyName}}\Tests\Feature;
+
+use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Entity\{{StudlyName}};
+use Lauchoit\LaravelHexMod\{{StudlyName}}\Infrastructure\Resources\{{StudlyName}}Resource;
+use Lauchoit\LaravelHexMod\{{StudlyName}}\Infrastructure\Model\{{StudlyName}} as {{StudlyName}}Model;
+
+class FindAll{{StudlyName}}Test extends TestCase
+{
+    use DatabaseTransactions;
+    #[TestDox('Find all {{StudlyName}}, verify structure and type')]
+    #[Test]
+    public function find_all_{{camelName}}(): void
+    {
+        {{StudlyName}}Model::factory()->count(5)->create();
+
+        $url = "/api/{{camelName}}";
+        $response = $this->getJson($url);
+        $response->assertJsonStructure([
+            'data' => [
+                '*' => [
+{{jsonFields}}
+                ],
+            ],
+        ]);
+
+        $original_data = $response->getOriginalContent();
+        $this->assertInstanceOf({{StudlyName}}Resource::class, $original_data['data'][0]);
+        $this->assertInstanceOf({{StudlyName}}::class, $original_data['data'][0]->resource);
+        $this->assertCount(5, $original_data['data']);
+        $response->assertStatus(200);
+    }
+}

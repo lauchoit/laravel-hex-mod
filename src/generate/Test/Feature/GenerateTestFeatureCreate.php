@@ -49,7 +49,7 @@ class GenerateTestFeatureCreate
         // Json response structure (con camelCase)
         $jsonFields = $filtered->map(function ($field) {
             return "                     '" . Str::camel(explode(':', $field)[0]) . "',";
-        })->prepend("                     'id',")
+        })
             ->push("                     'createdAt',")
             ->push("                     'updatedAt',")
             ->implode("\n");

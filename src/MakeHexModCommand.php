@@ -13,6 +13,7 @@ use Lauchoit\LaravelHexMod\generate\GenerateResource;
 use Lauchoit\LaravelHexMod\generate\GenerateUpdateRequest;
 use Lauchoit\LaravelHexMod\generate\GenerateValidationResponse;
 use Lauchoit\LaravelHexMod\generate\Test\Feature\GenerateTestFeatureCreate;
+use Lauchoit\LaravelHexMod\generate\Test\Feature\GenerateTestFeatureFindAll;
 use Lauchoit\LaravelHexMod\generate\Test\Unit\GenerateTestEntity;
 use Lauchoit\LaravelHexMod\generate\Test\Unit\GenerateTestException;
 use Lauchoit\LaravelHexMod\inject\InjectBindingInAppServiceProvider;
@@ -113,6 +114,7 @@ class MakeHexModCommand extends Command
             "Tests/Unit/Domain/Exceptions/MyModuleNotFoundExceptionTest.stub",
             "Tests/Feature/CreateMyModuleTest.stub",
             "Tests/Feature/DeleteByIdMyModuleTest.stub",
+            "Tests/Feature/FindAllMyModuleTest.stub",
         ]);
 
         foreach ($files as $relativePath) {
@@ -188,8 +190,12 @@ class MakeHexModCommand extends Command
                 $content = GenerateTestFeatureCreate::run($fields, $content, $camelName, $kebabName, $studlyName);
             }
 
-            if (str_contains($relativePath, "Tests/Feature/DeleteById{$studlyName}Test.stub")) {
-                $content = GenerateTestFeatureCreate::run($fields, $content, $camelName, $kebabName, $studlyName);
+//            if (str_contains($relativePath, "Tests/Feature/DeleteById{$studlyName}Test.stub")) {
+//                $content = GenerateTestFeatureCreate::run($fields, $content, $camelName, $kebabName, $studlyName);
+//            }
+
+            if (str_contains($relativePath, "Tests/Feature/FindAll{$studlyName}Test.stub")) {
+                $content = GenerateTestFeatureFindAll::run($fields, $content, $camelName, $kebabName, $studlyName);
             }
 
 

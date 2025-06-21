@@ -1,4 +1,5 @@
 <?php
+
 namespace Lauchoit\LaravelHexMod\updates;
 
 use Illuminate\Console\Command;
@@ -17,6 +18,7 @@ class UpdateFactory
         $qualifiedModel = "Lauchoit\\LaravelHexMod\\{$studlyName}\\Infrastructure\\Model\\{$studlyName}";
         $useLine = "use {$qualifiedModel};";
         $extendsLine = "@extends \\Illuminate\\Database\\Eloquent\\Factories\\Factory<{$studlyName}>";
+
         $modelBlock = <<<PHP
     /**
      * The name of the factory's corresponding model.
@@ -27,11 +29,28 @@ class UpdateFactory
 
 PHP;
 
+        // Construir array dinámico del método definition()
+        $fieldDefinitions = collect($fields)->map(function ($field) {
+            [$name, $type] = array_pad(explode(':', $field), 2, 'string');
+
+            $value = match ($type) {
+                'string', 'text', 'longText' => "'{$name}' => \$this->faker->word,",
+                'integer' => "'{$name}' => \$this->faker->numberBetween(1, 100),",
+                'float' => "'{$name}' => \$this->faker->randomFloat(2, 0, 1000),",
+                'boolean' => "'{$name}' => \$this->faker->boolean,",
+                'date', 'datetime' => "'{$name}' => \$this->faker->date(),",
+                'json' => "'{$name}' => [],",
+                default => "'{$name}' => null,",
+            };
+
+            return "            {$value}";
+        })->implode("\n");
+
         $definitionMethod = <<<PHP
     public function definition(): array
     {
         return [
-            //
+{$fieldDefinitions}
         ];
     }
 PHP;
@@ -67,6 +86,6 @@ PHP;
         );
 
         file_put_contents($factoryPath, $content);
-        $command->info("✅ Factory {$studlyName}Factory actualizado con estructura limpia.");
+        $command->info("✅ Factory {$studlyName}Factory actualizado con campos generados dinámicamente.");
     }
 }

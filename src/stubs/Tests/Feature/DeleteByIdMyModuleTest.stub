@@ -5,18 +5,18 @@ namespace Lauchoit\LaravelHexMod\{{StudlyName}}\Tests\Feature;
 use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Lauchoit\LaravelHexMod\{{StudlyName}}\Infrastructure\Model\{{StudlyName}};
 
 class DeleteById{{StudlyName}}Test extends TestCase
 {
+    use DatabaseTransactions;
+
     #[TestDox('Delete a {{StudlyName}} by ID')]
     #[Test]
-    public function delete_{{camelName}}_by_id()
+    public function delete_{{camelName}}_by_id(): void
     {
-        $carro = {{StudlyName}}::factory()->create([
-            'attribute1' => 'value1',
-            'attribute2' => 'value2',
-        ]);
+        $carro = {{StudlyName}}::factory()->create();
 
         $url = "/api/{{camelName}}/{$carro->id}";
         $response = $this->delete($url);
