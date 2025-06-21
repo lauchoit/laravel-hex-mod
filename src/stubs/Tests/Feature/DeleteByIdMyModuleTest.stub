@@ -16,19 +16,20 @@ class DeleteById{{StudlyName}}Test extends TestCase
     #[Test]
     public function delete_{{camelName}}_by_id(): void
     {
-        $carro = {{StudlyName}}::factory()->create();
+        ${{camelName}} = {{StudlyName}}::factory()->create();
 
-        $url = "/api/{{camelName}}/{$carro->id}";
-        $response = $this->delete($url);
+        $url = "/api/{{kebabName}}/{${{camelName}}->id}";
+        $response = $this->delete($url)
+            ->assertStatus(200);
 
-        $response->assertStatus(200);
+        $this->assertDatabaseMissing('{{snakeName}}', ['id' => ${{camelName}}->id]);
     }
 
     #[TestDox('Delete a {{StudlyName}} with bad ID')]
     #[Test]
     public function delete_{{camelName}}_with_bad_id()
     {
-        $url = "/api/{{camelName}}/999999";
+        $url = "/api/{{kebabName}}/999999";
         $response = $this->delete($url);
 
         $response->assertStatus(404);

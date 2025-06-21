@@ -153,8 +153,8 @@ class MakeHexModCommand extends Command
 
             $content = file_get_contents($sourceStub);
             $content = str_replace(
-                ['{{StudlyName}}', '{{kebabName}}', '{{camelName}}'],
-                [$studlyName, $kebabName, $camelName],
+                ['{{StudlyName}}', '{{kebabName}}', '{{camelName}}', '{{snakeName}}'],
+                [$studlyName, $kebabName, $camelName, $snakeName],
                 $content
             );
 
@@ -211,7 +211,7 @@ class MakeHexModCommand extends Command
             }
 
             if (str_contains($relativePath, "Tests/Feature/UpdateById{$studlyName}Test.stub")) {
-                $content = GenerateTestFeatureUpdateById::run($fields, $content, $camelName, $studlyName);
+                $content = GenerateTestFeatureUpdateById::run($fields, $content, $camelName, $studlyName, $snakeName);
             }
 
             file_put_contents($targetPath, $content);

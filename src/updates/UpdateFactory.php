@@ -39,7 +39,7 @@ PHP;
                 'float' => "'{$name}' => \$this->faker->randomFloat(2, 0, 1000),",
                 'boolean' => "'{$name}' => \$this->faker->boolean,",
                 'date', 'datetime' => "'{$name}' => \$this->faker->date(),",
-                'json' => "'{$name}' => [],",
+                'json' => "'{$name}' => '{\"key1\": \"value1\", \"key2\": \"value2\"}',",
                 default => "'{$name}' => null,",
             };
 

@@ -46,6 +46,8 @@ class Create{{StudlyName}}Test extends TestCase
              ]);
         $response->assertJsonFragment($data);
         $this->assertDatabaseHas('{{snakeName}}', {{databaseData}});
+
+{{jsonAssertions}}
     }
 
     #[TestDox('Create {{camelName}} with missing fields (NO registered)')]

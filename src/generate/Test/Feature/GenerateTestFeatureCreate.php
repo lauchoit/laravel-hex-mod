@@ -6,18 +6,20 @@ use Illuminate\Support\Str;
 
 class GenerateTestFeatureCreate
 {
-    public static function run(array $fields, string $content, string $camelName, string $kebabName, string $studlyName): string
+    public static function run(array $fields, string $content, string $camelName, string $kebabName, string $studlyName, string $snakeName): string
     {
         $filtered = collect($fields)->reject(fn($field) => in_array(explode(':', $field)[0], ['id', 'createdAt', 'updatedAt']));
 
+        $jsonKeys = [];
+
         // CamelCase para payload JSON
-        $validCamel = $filtered->mapWithKeys(function ($field) {
+        $validCamel = $filtered->mapWithKeys(function ($field) use (&$jsonKeys) {
             [$name, $type] = explode(':', $field);
             $value = self::exampleValue($type, $name);
 
-            if ($type === 'date') {
-                // Ajustamos al formato ISO retornado por Laravel
-                $value .= 'T00:00:00.000000Z';
+            if ($type === 'json') {
+                $jsonKeys[] = $name;
+                $value = json_encode($value);
             }
 
             return [Str::camel($name) => $value];
@@ -27,9 +29,19 @@ class GenerateTestFeatureCreate
         // SnakeCase para assertDatabaseHas
         $validSnake = $filtered->mapWithKeys(function ($field) {
             [$name, $type] = explode(':', $field);
-            return [Str::snake($name) => self::exampleValue($type, $name)];
+            $value = self::exampleValue($type, $name);
+            return [Str::snake($name) => $value];
+        })->reject(function ($_, $key) use ($jsonKeys) {
+            return in_array(Str::snake($key), array_map([Str::class, 'snake'], $jsonKeys));
         })->all();
         $databaseData = self::toPhpArrayString($validSnake, 3);
+
+        // Validaciones JSON específicas para campos tipo json
+        $jsonAssertions = '';
+        foreach ($jsonKeys as $jsonKey) {
+            $jsonAssertions .= "        \$metadata = json_decode(\$data['" . Str::camel($jsonKey) . "'], true);\n";
+            $jsonAssertions .= "        \$this->assertEquals(['key' => 'value'], \$metadata);\n";
+        }
 
         // Campos vacíos camelCase
         $invalidCamel = $filtered->mapWithKeys(function ($field) {
@@ -55,12 +67,11 @@ class GenerateTestFeatureCreate
             ->implode("\n");
 
         return str_replace(
-            ['{{camelName}}', '{{kebabName}}', '{{StudlyName}}', '{{validData}}', '{{invalidData}}', '{{invalidFragment}}', '{{jsonFields}}', '{{databaseData}}'],
-            [$camelName, $kebabName, $studlyName, $validData, $invalidData, $invalidFragmentString, $jsonFields, $databaseData],
+            ['{{camelName}}', '{{kebabName}}', '{{StudlyName}}', '{{validData}}', '{{invalidData}}', '{{invalidFragment}}', '{{jsonFields}}', '{{databaseData}}', '{{snakeName}}', '{{jsonAssertions}}'],
+            [$camelName, $kebabName, $studlyName, $validData, $invalidData, $invalidFragmentString, $jsonFields, $databaseData, $snakeName, rtrim($jsonAssertions)],
             $content
         );
     }
-
 
     private static function exampleValue(string $type, string $name): mixed
     {
@@ -69,7 +80,8 @@ class GenerateTestFeatureCreate
             'integer' => 1,
             'float' => 123.45,
             'boolean' => true,
-            'date', 'datetime' => '2025-07-01',
+            'date' => '2025-07-01',
+            'datetime' => '2025-07-01 14:30:00',
             'json' => ['key' => 'value'],
             default => 'value'
         };
