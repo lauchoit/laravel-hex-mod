@@ -1,0 +1,54 @@
+<?php
+
+namespace Lauchoit\LaravelHexMod\{{StudlyName}}\Tests\Feature;
+
+use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Lauchoit\LaravelHexMod\{{StudlyName}}\Domain\Entity\{{StudlyName}};
+use Lauchoit\LaravelHexMod\{{StudlyName}}\Infrastructure\Resources\{{StudlyName}}Resource;
+use Lauchoit\LaravelHexMod\{{StudlyName}}\Infrastructure\Model\{{StudlyName}} as {{StudlyName}}Model;
+
+class FindById{{StudlyName}}Test extends TestCase
+{
+    use DatabaseTransactions;
+
+    #[TestDox('Find {{StudlyName}} by ID, verify structure and type')]
+    #[Test]
+    public function find_by_id_and_verify_structure_and_type(): void
+    {
+        ${{camelName}}s = {{StudlyName}}Model::factory()->count(3)->create();
+
+        $url = "/api/{{camelName}}/{${{camelName}}s[0]->id}";
+
+        $response = $this->getJson($url)
+            ->assertStatus(200);
+
+        $response->assertJsonStructure([
+            'data' => [
+{{jsonFields}}
+            ],
+        ]);
+
+        $responseOriginal = $response->getOriginalContent();
+        $this->assertTrue($responseOriginal['ok']);
+        $this->assertequals('success.search', $responseOriginal['message']);
+        $this->assertInstanceOf({{StudlyName}}Resource::class, $responseOriginal['data']);
+        $this->assertInstanceOf({{StudlyName}}::class, $responseOriginal['data']->resource);
+    }
+    
+    #[TestDox('Find {{StudlyName}} by invalid ID, expect 404 error')]
+    #[Test]
+    public function find_with_invalid_id(): void
+    {
+        $url = "/api/{{camelName}}/999999"; // ID que no existe
+
+        $response = $this->getJson($url)
+            ->assertStatus(404);
+
+        $responseOriginal = $response->getOriginalContent();
+        $this->assertFalse($responseOriginal['ok']);
+        $this->assertequals('error.not_found', $responseOriginal['message']);
+    }
+}

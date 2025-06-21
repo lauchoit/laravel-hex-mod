@@ -11,24 +11,24 @@ class ApiResponse
     /**
      * RESPONSES SUCCESS
      */
-    public static $SUCCESS_CREATED = 'success.created';
-    public static $SUCCESS_SEARCH = 'success.search';
-    public static $SUCCESS_DELETED = 'success.deleted';
-    public static $SUCCESS_UPDATED = 'success.updated';
+    public static string $SUCCESS_CREATED = 'success.created';
+    public static string $SUCCESS_SEARCH = 'success.search';
+    public static string $SUCCESS_DELETED = 'success.deleted';
+    public static string $SUCCESS_UPDATED = 'success.updated';
     /**
      * RESPONSES ERRORS
      */
-    public static $ERROR_NOT_FOUND = 'error.not_found';
-    public static $ERROR_VALIDATION_FAILED = 'error.validation.failed';
+    public static string $ERROR_NOT_FOUND = 'error.not_found';
+    public static string $ERROR_VALIDATION_FAILED = 'error.validation.failed';
 
 
     /**
      * @param string $message
      * @param mixed|null $data
-     * @param $code
+     * @param int $code
      * @return JsonResponse
      */
-    public static function success(string $message, mixed $data = null, $code = 200): JsonResponse
+    public static function success(string $message, mixed $data = null, int $code = 200): JsonResponse
     {
         return self::responseGeneric($message, $data, $code, $ok = true);
     }
@@ -36,22 +36,22 @@ class ApiResponse
     /**
      * @param string $message
      * @param mixed|null $data
-     * @param $code
+     * @param int $code
      * @return JsonResponse
      */
-    public static function error(string $message, mixed $data = null, $code = 400): JsonResponse
+    public static function error(string $message, mixed $data = null, int $code = 400): JsonResponse
     {
         return self::responseGeneric($message, $data, $code, $ok = false);
     }
 
     /**
-     * @param $message
-     * @param $data
-     * @param $code
-     * @param $ok
+     * @param string $message
+     * @param mixed $data
+     * @param int $code
+     * @param bool $ok
      * @return JsonResponse
      */
-    private static function responseGeneric($message, $data, $code, $ok): JsonResponse
+    private static function responseGeneric(string $message, mixed $data, int $code, bool $ok): JsonResponse
     {
         return response()->json([
             'ok' => $ok,
