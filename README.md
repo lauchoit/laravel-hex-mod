@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="src/assets/logo_lauchoit.jpg" alt="LauchoIT Logo" width="300">
+  <img src="src/assets/logo_lauchoit.jpg" alt="LauchoIT Logo" width="150">
 </p>
 
 # Laravel Hex Mod
@@ -8,7 +8,7 @@
 
 [![License](https://img.shields.io/github/license/LauchoIT/laravel-hex-mod.svg)](https://github.com/LauchoIT/laravel-hex-mod/blob/main/LICENSE)
 [![Packagist](https://img.shields.io/packagist/v/lauchoit/laravel-hex-mod.svg)](https://packagist.org/packages/lauchoit/laravel-hex-mod)
-[![Made by LauchoIT](https://img.shields.io/badge/Made%20by-LauchoIT-blue)](https://lauch...
+[![Made by LauchoIT](https://img.shields.io/badge/Made%20by-LauchoIT-blue)](https://lauchoit.com)
 
 ---
 
@@ -122,18 +122,7 @@ This command will generate a complete module for `Client` with specific field an
 ```bash
 php artisan make:hex-mod client --no-test
 ```
-
 If you provide the `--no-test` option, the generator will skip creating tests for the module.
-
-## 🙌 Made with ❤️ by [LauchoIT](https://lauchoit.com)
-
-Feel free to contribute or suggest features via GitHub issues or PRs.
-
-## 📜 License
-
-This package is open-sourced software licensed under the [MIT license](LICENSE).
-
-```
 
 ## 🧪 Test Coverage
 
@@ -148,3 +137,11 @@ Run your tests:
 ```bash
 php artisan test
 ```
+
+## 🙌 Made with ❤️ by [LauchoIT](https://lauchoit.com)
+
+Feel free to contribute or suggest features via GitHub issues or PRs.
+
+## 📜 License
+
+This package is open-sourced software licensed under the [MIT license](LICENSE).
