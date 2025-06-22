@@ -3,6 +3,7 @@
 namespace Lauchoit\LaravelHexMod\generate\Test\Feature;
 
 use Illuminate\Support\Str;
+use Lauchoit\LaravelHexMod\generate\Shared\ValidFieldType;
 
 class GenerateTestFeatureUpdateById
 {
@@ -20,10 +21,23 @@ class GenerateTestFeatureUpdateById
         // Usar camelCase para request
         $snakeNameData = $filtered->map(function ($field, $i) {
             [$name, $type] = explode(':', $field);
-            $snakeNameDatabase = Str::snake($name);
-            $value = self::exampleUpdateValue($type, $i);
+            if ($type !== ValidFieldType::JSON->value) {
+                $value = self::exampleUpdateValue($type, $i);
+                $snakeNameDatabase = Str::snake($name);
             return "            '" . $snakeNameDatabase . "' => " . var_export($value, true) . ",";
+            }
         })->implode("\n");
+        // Validaciones JSON específicas para campos tipo json
+        $jsonAssertions = '';
+
+        foreach ($filtered as $field) {
+            [$name, $type] = explode(':', $field);
+
+            if ($type === ValidFieldType::JSON->value) {
+                $jsonAssertions .= "\$metadata = json_decode(\$data['" . Str::camel($name) . "'], true);\n";
+                $jsonAssertions .= "        \$this->assertEquals(['updated' => 'true'], \$metadata);\n";
+            }
+        }
 
         // Database assertion: snake_case keys
         $databaseData = $filtered->map(function ($field, $i) {
@@ -41,7 +55,8 @@ class GenerateTestFeatureUpdateById
 
         $assertDatabaseHasPartial = "            'id' => \${$camelName}->id,\n";
         $filtered->each(function ($field) use (&$assertDatabaseHasPartial, $onlyOneKey, $onlyOneValue, $camelName) {
-            $name = explode(':', $field)[0];
+            [$name, $type] = explode(':', $field);
+//            if ($type === ValidFieldType::JSON->value) return;
             $snake = Str::snake($name);
             if ($name !== $onlyOneKey) {
                 $assertDatabaseHasPartial .= "            '" . $snake . "' => \${$camelName}->{$name},\n";
@@ -73,6 +88,7 @@ class GenerateTestFeatureUpdateById
                 '{{snakeName}}',
                 '{{databaseData}}',
                 '{{snakeNameData}}',
+                '{{jsonAssertions}}',
             ],
             [
                 $camelName,
@@ -85,6 +101,7 @@ class GenerateTestFeatureUpdateById
                 $snakeName,
                 $databaseData,
                 $snakeNameData,
+                $jsonAssertions
             ],
             $content
         );

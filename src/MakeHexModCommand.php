@@ -12,6 +12,7 @@ use Lauchoit\LaravelHexMod\generate\GenerateModel;
 use Lauchoit\LaravelHexMod\generate\GenerateResource;
 use Lauchoit\LaravelHexMod\generate\GenerateUpdateRequest;
 use Lauchoit\LaravelHexMod\generate\GenerateValidationResponse;
+use Lauchoit\LaravelHexMod\generate\Shared\ValidFieldType;
 use Lauchoit\LaravelHexMod\generate\Test\Feature\GenerateTestFeatureCreate;
 use Lauchoit\LaravelHexMod\generate\Test\Feature\GenerateTestFeatureFindAll;
 use Lauchoit\LaravelHexMod\generate\Test\Feature\GenerateTestFeatureFindById;
@@ -48,15 +49,6 @@ class MakeHexModCommand extends Command
             }
         }
 
-        $studlyName = Str::studly($name);
-        $kebabName  = Str::kebab($name);
-        $camelName  = Str::camel($name);
-        $snakeName = Str::snake(Str::pluralStudly($studlyName));
-
-        $tableName = "create_" . Str::snake(Str::pluralStudly($studlyName)) . "_table";
-        Artisan::call("make:migration $tableName");
-        Artisan::call("make:factory {$studlyName}Factory");
-
         // Procesar los campos
         $inputFields = $this->option('field');
         $rawFields = collect($inputFields)
@@ -75,14 +67,26 @@ class MakeHexModCommand extends Command
             })->toArray();
         }
 
-        $validTypes = ['string', 'integer', 'float', 'date', 'datetime', 'json', 'boolean', 'text', 'longText'];
         foreach ($fields as $field) {
             [$_, $type] = explode(':', $field);
-            if (!in_array($type, $validTypes)) {
-                $this->error("❌ Tipo inválido para el campo '{$field}'. Tipos permitidos: " . implode(', ', $validTypes));
+            if (!ValidFieldType::isValid($type)) {
+                $this->error(ValidFieldType::errorMessage($type));
                 return;
             }
         }
+
+        $studlyName = Str::studly($name);
+        $kebabName  = Str::kebab($name);
+        $camelName  = Str::camel($name);
+        $snakeName = Str::snake(Str::pluralStudly($studlyName));
+
+        $tableName = "create_" . Str::snake(Str::pluralStudly($studlyName)) . "_table";
+        Artisan::call("make:migration $tableName");
+        Artisan::call("make:factory {$studlyName}Factory");
+
+
+
+
 
         // Updates y generación
         UpdatePhpunit::run($this);

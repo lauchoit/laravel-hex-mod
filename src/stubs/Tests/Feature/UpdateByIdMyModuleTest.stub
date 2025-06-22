@@ -43,6 +43,7 @@ class UpdateById{{StudlyName}}Test extends TestCase
         $this->assertDatabaseHas('{{snakeName}}', [
 {{snakeNameData}}
         ]);
+        {{jsonAssertions}}
     }
 
     #[TestDox('Update {{StudlyName}} by ID,with only one field')]
