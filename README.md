@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/logo_lauchoit.jpg" alt="LauchoIT Logo" width="300">
+  <img src="src/assets/logo_lauchoit.jpg" alt="LauchoIT Logo" width="300">
 </p>
 
 # Laravel Hex Mod
