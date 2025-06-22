@@ -62,8 +62,9 @@ class UpdateById{{StudlyName}}Test extends TestCase
             ->assertStatus(200);
 
         $this->assertDatabaseHas('{{snakeName}}', [
-{{assertDatabaseHasPartial}}
+{{assertDatabaseHasPartialOnlyOneField}}
         ]);
+        {{jsonAssertionsOnlyOneField}}
     }
 
     #[TestDox('Update {{StudlyName}} with bad ID, expect 404')]
