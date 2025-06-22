@@ -1,7 +1,7 @@
 {
     "name": "lauchoit/laravel-hex-mod",
-    "description": "esta es la descripcion",
-    "version": "0.0.1",
+    "description": "Modular scaffolding generator for Laravel (Hexagonal Architecture)",
+    "version": "0.9.0",
     "type": "library",
     "license": "MIT",
     "autoload": {
