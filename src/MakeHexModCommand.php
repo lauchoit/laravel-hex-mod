@@ -29,11 +29,13 @@ use Illuminate\Support\Facades\{Artisan, File};
 
 class MakeHexModCommand extends Command
 {
-    protected $signature = 'make:hex-mod {name} {--f|field=*}';
+    protected $signature = 'make:hex-mod {name} {--f|field=*} {--no-test}';
     protected $description = 'Create a hexagonal architecture base structure for a module';
+
 
     public function handle(): void
     {
+        $skipTests = $this->option('no-test');
         $name = $this->argument('name');
 
         $existsSrc = base_path('src');
@@ -123,6 +125,10 @@ class MakeHexModCommand extends Command
             "Infrastructure/Repository/UseCases/UpdateByIdMyModuleUseCaseImpl.stub",
             "Infrastructure/Resources/MyModuleResource.stub",
             "Infrastructure/Routes/MyModuleRoutes.stub",
+
+        ]);
+
+        $arrayTest = [
             "Tests/Unit/Domain/Entity/MyModuleTest.stub",
             "Tests/Unit/Domain/Entity/MyModuleSourceTest.stub",
             "Tests/Unit/Domain/Exceptions/MyModuleNotFoundExceptionTest.stub",
@@ -131,7 +137,11 @@ class MakeHexModCommand extends Command
             "Tests/Feature/FindAllMyModuleTest.stub",
             "Tests/Feature/FindByIdMyModuleTest.stub",
             "Tests/Feature/UpdateByIdMyModuleTest.stub",
-        ]);
+        ];
+
+        if (!$skipTests) {
+            $files = $files->merge($arrayTest);
+        }
 
         foreach ($files as $relativePath) {
             $sourceStub = $stubPath . '/' . $relativePath;

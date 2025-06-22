@@ -10,6 +10,12 @@ class GenerateTestFeatureUpdateById
     public static function run(array $fields, string $content, string $camelName, string $studlyName, string $snakeName): string
     {
         $filtered = collect($fields)->reject(fn($field) => in_array(explode(':', $field)[0], ['id', 'createdAt', 'updatedAt']));
+        $filteredJsonFields = collect($fields)
+            ->filter(function ($field) {
+                [, $type] = explode(':', $field);
+                return $type === ValidFieldType::JSON->value;
+            })
+            ->values();
 
         $updatedData = $filtered->map(function ($field, $i) {
             [$name, $type] = explode(':', $field);
@@ -27,11 +33,15 @@ class GenerateTestFeatureUpdateById
             }
         })->filter()->implode("\n");
 
+        // 🔧 JSON assertions bien alineadas
         $jsonAssertions = '';
-        foreach ($filtered as $field) {
+        foreach ($filteredJsonFields as $key => $field) {
+            $indent = $key === 0 ? '': str_repeat(' ', 8);
             [$name, $type] = explode(':', $field);
             if ($type === ValidFieldType::JSON->value) {
-                $jsonAssertions .= "\$metadata = json_decode(\$data['" . Str::camel($name) . "'], true, 512, JSON_THROW_ON_ERROR);\n";
+                echo("Processing JSON field: {$key}\n");
+                $camel = Str::camel($name);
+                $jsonAssertions .= "{$indent}\$metadata = json_decode(\$data['{$camel}'], true, 512, JSON_THROW_ON_ERROR);\n";
                 $jsonAssertions .= "        \$this->assertEquals(['updated' => true], \$metadata);\n";
             }
         }
@@ -70,21 +80,22 @@ class GenerateTestFeatureUpdateById
             ->push("                'updatedAt',")
             ->implode("\n");
 
-        // ✅ NUEVO BLOQUE para la prueba de un solo campo
+        // ✅ Alineación de assertions JSON y base de datos en la prueba de un solo campo
         $assertDatabaseHasPartialOnlyOneField = "            'id' => \${$camelName}->id,\n";
         $jsonAssertionsOnlyOneField = '';
 
-        $filtered->each(function ($field) use (&$assertDatabaseHasPartialOnlyOneField, &$jsonAssertionsOnlyOneField, $onlyOneKey, $onlyOneValue, $camelName) {
+        $filteredJsonFields->each(function ($field, $key) use (&$assertDatabaseHasPartialOnlyOneField, &$jsonAssertionsOnlyOneField, $onlyOneKey, $onlyOneValue, $camelName) {
+            $indent = $key === 0 ? '': str_repeat(' ', 8);
             [$name, $type] = explode(':', $field);
             $snake = Str::snake($name);
             $camel = Str::camel($name);
 
             if ($type === ValidFieldType::JSON->value) {
                 if ($name === $onlyOneKey) {
-                    $jsonAssertionsOnlyOneField .= "\$metadata = json_decode(\$data['{$camel}'], true, 512, JSON_THROW_ON_ERROR);\n";
+                    $jsonAssertionsOnlyOneField .= "{$indent}\$metadata = json_decode(\$data['{$camel}'], true, 512, JSON_THROW_ON_ERROR);\n";
                     $jsonAssertionsOnlyOneField .= "        \$this->assertEquals(['updated' => true], \$metadata);\n";
                 } else {
-                    $jsonAssertionsOnlyOneField .= "\$metadata = json_decode(\${$camelName}->{$camel}, true, 512, JSON_THROW_ON_ERROR);\n";
+                    $jsonAssertionsOnlyOneField .= "{$indent}\$metadata = json_decode(\${$camelName}->{$camel}, true, 512, JSON_THROW_ON_ERROR);\n";
                     $jsonAssertionsOnlyOneField .= "        \$this->assertEquals(\$metadata, json_decode(\${$camelName}->{$camel}, true));\n";
                 }
                 return;
