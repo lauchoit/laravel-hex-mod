@@ -120,9 +120,17 @@ The type available are: `string`, `integer`, `float`, `boolean`, `date`, `dateti
 This command will generate a complete module for `Client` with specific field and type, if your not provider types, the system makes field with a string type.
 #### Without Tests
 ```bash
-php artisan make:hex-mod client --no-test
+php artisan make:hex-mod client --skip-test
 ```
-If you provide the `--no-test` option, the generator will skip creating tests for the module.
+If you provide the `--skip-test` option, the generator will skip creating tests for the module.
+## Route
+The generator automatically creates a route file for the module, which you can find in `src/Client/Infrastructure/Routes/ClientRoutes.php`. 
+
+
+* You can customize the routes as needed, and they will be automatically loaded by the application.
+* This route file is register automatically in the `bootstrap/app.php` of your Laravel application.
+* You can see the routes in the `php artisan route:list` command.
+
 
 ## 🧪 Test Coverage
 Note: you need to have the `phpunit` package installed in your Laravel project to run the tests.

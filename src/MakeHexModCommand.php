@@ -30,13 +30,13 @@ use Illuminate\Support\Facades\{Artisan, File};
 
 class MakeHexModCommand extends Command
 {
-    protected $signature = 'make:hex-mod {name} {--f|field=*} {--no-test}';
+    protected $signature = 'make:hex-mod {name} {--f|field=*} {--skip-test}';
     protected $description = 'Create a hexagonal architecture base structure for a module';
 
 
     public function handle(): void
     {
-        $skipTests = $this->option('no-test');
+        $skipTests = $this->option('skip-test');
         $name = $this->argument('name');
 
         $existsSrc = base_path('src');
