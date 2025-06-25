@@ -22,7 +22,7 @@
             "email": "contacto@lauchoit.com"
         }
     ],
-    "minimum-stability": "RC",
+    "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
         "php": "^8.1"

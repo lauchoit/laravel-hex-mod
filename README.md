@@ -133,7 +133,7 @@ The generator automatically creates a route file for the module, which you can f
 
 
 ## 🧪 Test Coverage
-Note: you need to have the `phpunit` package installed in your Laravel project to run the tests.
+Note: you need to have the `phpunit` package installed and configured in your Laravel project to run the tests. You need run migratrions before runnig the tests.
 The generator produces unit and feature tests for:
 
 - Entity classes
