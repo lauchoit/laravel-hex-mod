@@ -21,6 +21,7 @@ use Lauchoit\LaravelHexMod\generate\Test\Unit\GenerateTestEntity;
 use Lauchoit\LaravelHexMod\generate\Test\Unit\GenerateTestException;
 use Lauchoit\LaravelHexMod\inject\InjectBindingInAppServiceProvider;
 use Lauchoit\LaravelHexMod\inject\InjectModulesRoutes;
+use Lauchoit\LaravelHexMod\updates\UpdateComposerPsr4;
 use Lauchoit\LaravelHexMod\updates\UpdateFactory;
 use Lauchoit\LaravelHexMod\updates\UpdateMigrationFields;
 use Lauchoit\LaravelHexMod\updates\UpdatePhpunit;
@@ -94,6 +95,7 @@ class MakeHexModCommand extends Command
         UpdatePhpunit::run($this);
         UpdateMigrationFields::run($this, $studlyName, $fields);
         UpdateFactory::run($this, $studlyName, $fields);
+        UpdateComposerPsr4::run();
         InjectBindingInAppServiceProvider::run($this, $studlyName);
         InjectModulesRoutes::run($this, $studlyName, $kebabName);
 
@@ -232,6 +234,12 @@ class MakeHexModCommand extends Command
 
         GenerateApiResponse::run($this);
         GenerateValidationResponse::run($this);
+
+        $this->info('Dumping autoload...');
+        exec('composer dump-autoload', $output, $result);
+        foreach ($output as $line) {
+            $this->line($line);
+        }
 
         Artisan::call('optimize:clear');
         $this->line(Artisan::output());
