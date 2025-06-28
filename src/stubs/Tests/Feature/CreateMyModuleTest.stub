@@ -36,7 +36,7 @@ class Create{{StudlyName}}Test extends TestCase
         $response = $this->post('/api/{{kebabName}}', $data);
 
         $response->assertStatus(201)
-             ->assertJsonStructure([
+             ->assertExactJsonStructure([
                  'ok',
                  'message',
                  'data' => [

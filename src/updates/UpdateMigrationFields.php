@@ -23,7 +23,13 @@ class UpdateMigrationFields
 
         $migrationContent = File::get($migrationFile->getPathname());
 
-        $columnLines = collect($fields)->map(function ($field) {
+        // Evitar duplicar campos
+        $existingContent = strtolower($migrationContent);
+
+        $columnLines = collect($fields)->filter(function ($field) use ($existingContent) {
+            [$name] = explode(':', $field);
+            return !Str::contains($existingContent, "->$name(") && !Str::contains($existingContent, "'$name'");
+        })->map(function ($field) {
             [$name, $type] = explode(':', $field);
             return match ($type) {
                 'string' => "\$table->string('$name');",
@@ -35,14 +41,19 @@ class UpdateMigrationFields
             };
         })->implode("\n            ");
 
+        if (empty($columnLines)) {
+            $command->info("ℹ️ Todos los campos ya estaban presentes en la migración para {$table}");
+            return;
+        }
+
+        // Insertar las líneas después de $table->id();
         $migrationContent = preg_replace(
-            '/\$table->id\(\);\n/',
+            '/(\$table->id\(\);\n)/',
             "\$table->id();\n            {$columnLines}\n",
             $migrationContent
         );
 
         File::put($migrationFile->getPathname(), $migrationContent);
-        $command->info("✅ Migración actualizada con campos: {$table}");
+        $command->info("✅ Migración actualizada con nuevos campos para: {$table}");
     }
-
 }

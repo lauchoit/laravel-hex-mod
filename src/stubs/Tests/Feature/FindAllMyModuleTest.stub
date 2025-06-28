@@ -22,7 +22,9 @@ class FindAll{{StudlyName}}Test extends TestCase
 
         $url = "/api/{{camelName}}";
         $response = $this->getJson($url);
-        $response->assertJsonStructure([
+        $response->assertExactJsonStructure([
+            'ok',
+            'message',
             'data' => [
                 '*' => [
 {{jsonFields}}
